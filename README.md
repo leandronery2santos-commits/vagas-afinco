@@ -68,3 +68,4 @@ Também é possível publicar a pasta diretamente pelo fluxo de deploy da Netlif
 - Criar painel/planilha com filtros
 - Adicionar domínio próprio `.com.br`
 - Criar QR Code para divulgar a vaga
+

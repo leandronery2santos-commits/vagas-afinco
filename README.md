@@ -69,3 +69,9 @@ Também é possível publicar a pasta diretamente pelo fluxo de deploy da Netlif
 - Adicionar domínio próprio `.com.br`
 - Criar QR Code para divulgar a vaga
 
+
+V5 — Unidades
+- Adicionadas as três fotos reais das fachadas enviadas.
+- Criada seção "Conheça nossas unidades" com endereço e link para localização.
+- Mantida a integração existente com Google Sheets e o vídeo de depoimento.
+- Adicionado CTA visual para contato com recrutador. O WhatsApp direto depende do número oficial do recrutador.

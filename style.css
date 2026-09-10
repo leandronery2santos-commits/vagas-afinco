@@ -183,17 +183,68 @@ footer{background:#050505;border-top:1px solid var(--border);color:#777;font-siz
 }
 
 
-/* Ações do hero e depoimentos */
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.btn-secondary{background:transparent;color:var(--white);border:1px solid #3a3a3a}
+/* ===== V5 — Unidades e contato ===== */
+.top-nav{display:flex;align-items:center;gap:24px}
+.top-nav>a:not(.top-link){font-size:13px;color:#d8d8d8;font-weight:700}
+.top-nav>a:not(.top-link):hover{color:var(--yellow)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn-secondary{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.22)}
 .btn-secondary:hover{border-color:var(--yellow);color:var(--yellow);transform:translateY(-2px)}
-.testimonials-section{padding:100px 0;background:#0a0a0a}
-.testimonials-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;max-width:980px;margin:0 auto}
-.testimonial-card{background:#111;border:1px solid #252525;border-radius:18px;overflow:hidden;box-shadow:0 16px 45px rgba(0,0,0,.2)}
-.testimonial-video{background:#000;display:flex;justify-content:center}
-.testimonial-video video{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover;max-height:720px;background:#000}
-.testimonial-info{padding:18px 20px 20px}
-.testimonial-info h3{margin:0 0 5px;font-size:20px;color:var(--white)}
-.testimonial-info p{margin:0;color:#aaa;font-size:14px}
-.testimonials-cta{text-align:center;margin-top:38px}
-@media(max-width:700px){.hero-actions{flex-direction:column;align-items:stretch}.hero-actions .btn{width:100%;text-align:center}.testimonials-grid{grid-template-columns:1fr;gap:22px}.testimonials-section{padding:70px 0}}
+
+.units-section{padding:96px 0;background:#0d0d0d;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+.units-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:42px}
+.unit-card{overflow:hidden;background:linear-gradient(145deg,#1b1b1b,#101010);border:1px solid var(--border);border-radius:24px;box-shadow:0 18px 50px rgba(0,0,0,.25);transition:transform .25s ease,border-color .25s ease}
+.unit-card:hover{transform:translateY(-6px);border-color:rgba(255,229,0,.32)}
+.unit-card.featured{border-color:rgba(255,229,0,.28)}
+.unit-photo-wrap{position:relative;height:250px;overflow:hidden;background:#171717}
+.unit-photo-wrap:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.45))}
+.unit-photo-wrap img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .5s ease}
+.unit-card:hover .unit-photo-wrap img{transform:scale(1.04)}
+.unit-city{position:absolute;z-index:2;left:16px;bottom:15px;padding:7px 10px;border-radius:999px;background:rgba(8,8,8,.82);border:1px solid rgba(255,255,255,.16);font-size:10px;letter-spacing:.08em;font-weight:800;color:var(--yellow)}
+.unit-content{padding:24px}
+.unit-label{display:block;color:var(--yellow);font-size:10px;letter-spacing:.12em;font-weight:800;margin-bottom:9px}
+.unit-content h3{margin:0 0 9px;font-size:22px;line-height:1.15}
+.unit-content p{margin:0;color:#aaa;font-size:14px}
+.map-link{display:inline-flex;margin-top:18px;color:var(--yellow);font-weight:800;font-size:13px}
+.map-link:hover{text-decoration:underline}
+
+.recruiter-section{padding:72px 0;background:linear-gradient(135deg,#111,#171717)}
+.recruiter-card{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:38px 42px;border:1px solid rgba(255,229,0,.22);border-radius:28px;background:radial-gradient(circle at 85% 20%,rgba(255,229,0,.1),transparent 30%),#121212}
+.recruiter-card h2{margin:0 0 10px;font-size:clamp(28px,4vw,42px);letter-spacing:-.03em}
+.recruiter-card p{margin:0;color:#bdbdbd}
+
+@media (max-width:900px){
+  .top-nav>a:not(.top-link){display:none}
+  .units-grid{grid-template-columns:1fr 1fr}
+  .recruiter-card{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:640px){
+  .topbar-inner{height:72px}
+  .logo{width:125px}
+  .top-link{padding:10px 14px;font-size:11px}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .hero-actions .btn{width:100%}
+  .units-section{padding:72px 0}
+  .units-grid{grid-template-columns:1fr}
+  .unit-photo-wrap{height:230px}
+  .recruiter-card{padding:28px 24px}
+}
+
+
+/* ===== V2 — mesma identidade visual, mais depoimentos e WhatsApp ===== */
+.testimonials-section{padding:96px 0;background:#161616;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+.testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px}
+.testimonial-card{overflow:hidden;background:linear-gradient(145deg,#1c1c1c,#101010);border:1px solid var(--border);border-radius:22px;box-shadow:0 18px 45px rgba(0,0,0,.22)}
+.testimonial-card.testimonial-featured{grid-column:span 3;display:grid;grid-template-columns:minmax(280px,1fr) 1fr}
+.testimonial-video{background:#000;min-height:280px}
+.testimonial-video video{display:block;width:100%;height:100%;max-height:520px;object-fit:cover;background:#000}
+.testimonial-placeholder{min-height:190px;display:grid;place-items:center;background:radial-gradient(circle at center,rgba(255,229,0,.12),transparent 45%),#0b0b0b;color:var(--yellow);font-size:42px;border-bottom:1px solid rgba(255,255,255,.06)}
+.testimonial-content{padding:24px}
+.testimonial-tag{display:inline-block;color:var(--yellow);font-size:10px;font-weight:800;letter-spacing:.14em;margin-bottom:10px}
+.testimonial-content h3{margin:0 0 5px;font-size:21px}
+.testimonial-content p{margin:0;color:#999;font-size:13px}
+.testimonial-content blockquote{margin:20px 0 0;padding-left:15px;border-left:2px solid var(--yellow);color:#d3d3d3;font-size:14px;line-height:1.6}
+.floating-whatsapp{position:fixed;right:22px;bottom:22px;z-index:50;display:inline-flex;align-items:center;gap:8px;padding:13px 17px;border-radius:999px;background:var(--yellow);color:var(--black);font-weight:800;font-size:12px;box-shadow:0 12px 35px rgba(0,0,0,.35);border:1px solid rgba(0,0,0,.15)}
+.floating-whatsapp:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(0,0,0,.42)}
+@media(max-width:900px){.testimonial-grid{grid-template-columns:1fr 1fr}.testimonial-card.testimonial-featured{grid-column:span 2;grid-template-columns:1fr}}
+@media(max-width:620px){.testimonial-grid{grid-template-columns:1fr}.testimonial-card.testimonial-featured{grid-column:span 1}.floating-whatsapp{right:14px;bottom:14px;padding:12px 14px}.floating-whatsapp span{display:none}}

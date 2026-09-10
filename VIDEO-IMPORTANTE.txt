@@ -1,0 +1,1 @@
+O vídeo original enviado é MOV/HEVC e tem aproximadamente 142 MB. Para publicação web, converta-o para MP4 H.264/AAC e salve como depoimento.mp4 nesta pasta. O index.html já está preparado para esse nome.

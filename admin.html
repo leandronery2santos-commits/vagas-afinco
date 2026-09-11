@@ -7,7 +7,8 @@
   <title>Painel Administrativo | AFINCO</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <style>
     * {
       box-sizing: border-box;
@@ -785,6 +786,93 @@
   }
 
 }
+
+/* =========================================================
+   GRÁFICOS DO DASHBOARD
+   ========================================================= */
+
+.charts-section {
+  margin-bottom: 30px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  border: 1px solid #e8e8e8;
+}
+
+.chart-full {
+  grid-column: 1 / -1;
+}
+
+.chart-header {
+  margin-bottom: 18px;
+}
+
+.chart-header h3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #171717;
+  margin-bottom: 5px;
+}
+
+.chart-header p {
+  font-size: 12px;
+  color: #777;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.chart-time {
+  height: 280px;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 800px) {
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-full {
+    grid-column: auto;
+  }
+
+  .chart-container {
+    height: 280px;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .chart-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+
+  .chart-time {
+    height: 240px;
+  }
+
+}
     
   </style>
 </head>
@@ -1149,6 +1237,65 @@
 
 </section>
 
+<!-- GRÁFICOS DO DASHBOARD -->
+
+<section class="charts-section">
+
+  <div class="dashboard-section-title">
+    Análise visual
+  </div>
+
+  <div class="charts-grid">
+
+    <!-- GRÁFICO 1 -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h3>Distribuição dos candidatos</h3>
+          <p>Candidatos por etapa do processo</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="statusChart"></canvas>
+      </div>
+    </div>
+
+
+    <!-- GRÁFICO 2 -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h3>Funil de recrutamento</h3>
+          <p>Evolução dos candidatos</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="funnelChart"></canvas>
+      </div>
+    </div>
+
+
+    <!-- GRÁFICO 3 -->
+    <div class="chart-card chart-full">
+      <div class="chart-header">
+        <div>
+          <h3>Candidaturas ao longo do tempo</h3>
+          <p>Volume de candidatos recebidos</p>
+        </div>
+      </div>
+
+      <div class="chart-container chart-time">
+        <canvas id="applicationsChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+      
       <!-- CANDIDATOS -->
 
       <section class="candidates-box">
@@ -2059,9 +2206,263 @@ function updateStats(candidates) {
       `${hiringRate.toFixed(1)}%`;
 
   }
-
+updateCharts(candidates);
 }
 
+   // =========================================================
+// GRÁFICOS DO DASHBOARD
+// =========================================================
+
+let statusChartInstance = null;
+let funnelChartInstance = null;
+let applicationsChartInstance = null;
+
+function updateCharts(candidates) {
+
+  // -----------------------------------------
+  // CONTAGEM POR STATUS
+  // -----------------------------------------
+
+  const novos = candidates.filter(c => c.status === "novo").length;
+  const analise = candidates.filter(c => c.status === "em análise").length;
+  const entrevistas = candidates.filter(c => c.status === "entrevista").length;
+  const aprovados = candidates.filter(c => c.status === "aprovado").length;
+  const contratados = candidates.filter(c => c.status === "contratado").length;
+
+  const descartados = candidates.filter(c =>
+    c.status === "descartado" ||
+    c.status === "reprovado"
+  ).length;
+
+
+  // -----------------------------------------
+  // GRÁFICO 1 — DISTRIBUIÇÃO
+  // -----------------------------------------
+
+  const statusCanvas = document.getElementById("statusChart");
+
+  if (statusCanvas) {
+
+    if (statusChartInstance) {
+      statusChartInstance.destroy();
+    }
+
+    statusChartInstance = new Chart(statusCanvas, {
+      type: "doughnut",
+
+      data: {
+        labels: [
+          "Novos",
+          "Em análise",
+          "Entrevista",
+          "Aprovados",
+          "Contratados",
+          "Descartados"
+        ],
+
+        datasets: [{
+          data: [
+            novos,
+            analise,
+            entrevistas,
+            aprovados,
+            contratados,
+            descartados
+          ],
+
+          backgroundColor: [
+            "#ffd800",
+            "#333333",
+            "#777777",
+            "#555555",
+            "#111111",
+            "#cccccc"
+          ],
+
+          borderWidth: 2,
+          borderColor: "#ffffff"
+        }]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+          legend: {
+            position: "bottom"
+          }
+        }
+      }
+    });
+  }
+
+
+  // -----------------------------------------
+  // GRÁFICO 2 — FUNIL
+  // -----------------------------------------
+
+  const funnelCanvas = document.getElementById("funnelChart");
+
+  if (funnelCanvas) {
+
+    if (funnelChartInstance) {
+      funnelChartInstance.destroy();
+    }
+
+    funnelChartInstance = new Chart(funnelCanvas, {
+      type: "bar",
+
+      data: {
+        labels: [
+          "Candidatos",
+          "Entrevistas",
+          "Aprovados",
+          "Contratados"
+        ],
+
+        datasets: [{
+          label: "Quantidade",
+
+          data: [
+            candidates.length,
+            entrevistas,
+            aprovados,
+            contratados
+          ],
+
+          backgroundColor: [
+            "#ffd800",
+            "#777777",
+            "#333333",
+            "#111111"
+          ],
+
+          borderRadius: 8
+        }]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
+      }
+    });
+  }
+
+
+  // -----------------------------------------
+  // GRÁFICO 3 — CANDIDATURAS AO LONGO DO TEMPO
+  // -----------------------------------------
+
+  const applicationsCanvas =
+    document.getElementById("applicationsChart");
+
+  if (applicationsCanvas) {
+
+    if (applicationsChartInstance) {
+      applicationsChartInstance.destroy();
+    }
+
+    const dates = {};
+
+    candidates.forEach(candidate => {
+
+      if (!candidate.created_at) return;
+
+      const date = new Date(candidate.created_at);
+
+      const label = date.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit"
+      });
+
+      dates[label] = (dates[label] || 0) + 1;
+    });
+
+
+    const sortedDates = Object.keys(dates).sort((a, b) => {
+
+      const [dayA, monthA] = a.split("/");
+      const [dayB, monthB] = b.split("/");
+
+      return new Date(
+        2026,
+        monthA - 1,
+        dayA
+      ) - new Date(
+        2026,
+        monthB - 1,
+        dayB
+      );
+    });
+
+
+    applicationsChartInstance = new Chart(
+      applicationsCanvas,
+      {
+        type: "line",
+
+        data: {
+          labels: sortedDates,
+
+          datasets: [{
+            label: "Candidaturas",
+
+            data: sortedDates.map(
+              date => dates[date]
+            ),
+
+            borderColor: "#ffd800",
+            backgroundColor: "rgba(255,216,0,0.15)",
+
+            fill: true,
+
+            tension: 0.35,
+
+            pointRadius: 5,
+            pointBackgroundColor: "#111111"
+          }]
+        },
+
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+
+          scales: {
+            y: {
+              beginAtZero: true,
+
+              ticks: {
+                precision: 0
+              }
+            }
+          }
+        }
+      }
+    );
+  }
+} 
 
   // =========================================================
   // FILTROS

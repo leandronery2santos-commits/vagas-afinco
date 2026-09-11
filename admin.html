@@ -1917,33 +1917,150 @@
   // ATUALIZAR ESTATÍSTICAS
   // =========================================================
 
-  function updateStats(candidates) {
+function updateStats(candidates) {
 
-    totalCandidates.textContent =
-      candidates.length;
+  // =========================================================
+  // CONTADORES PRINCIPAIS
+  // =========================================================
+
+  const total = candidates.length;
+
+  const novos = candidates.filter(
+    candidate => candidate.status === "novo"
+  ).length;
+
+  const analise = candidates.filter(
+    candidate => candidate.status === "em análise"
+  ).length;
+
+  const entrevistas = candidates.filter(
+    candidate => candidate.status === "entrevista"
+  ).length;
+
+  const aprovados = candidates.filter(
+    candidate => candidate.status === "aprovado"
+  ).length;
+
+  const contratados = candidates.filter(
+    candidate => candidate.status === "contratado"
+  ).length;
 
 
-    newCandidates.textContent =
-      candidates.filter(
-        candidate =>
-          candidate.status === "novo"
-      ).length;
+  // =========================================================
+  // CARDS PRINCIPAIS
+  // =========================================================
+
+  totalCandidates.textContent = total;
+
+  newCandidates.textContent = novos;
+
+  analysisCandidates.textContent = analise;
+
+  hiredCandidates.textContent = contratados;
 
 
-    analysisCandidates.textContent =
-      candidates.filter(
-        candidate =>
-          candidate.status === "em análise"
-      ).length;
+  // =========================================================
+  // FUNIL PROFISSIONAL
+  // =========================================================
+
+  const funnelNew =
+    document.getElementById("funnelNew");
+
+  const funnelAnalysis =
+    document.getElementById("funnelAnalysis");
+
+  const funnelInterview =
+    document.getElementById("funnelInterview");
+
+  const funnelApproved =
+    document.getElementById("funnelApproved");
+
+  const funnelHired =
+    document.getElementById("funnelHired");
 
 
-    hiredCandidates.textContent =
-      candidates.filter(
-        candidate =>
-          candidate.status === "contratado"
-      ).length;
+  if (funnelNew) {
+    funnelNew.textContent = novos;
+  }
+
+  if (funnelAnalysis) {
+    funnelAnalysis.textContent = analise;
+  }
+
+  if (funnelInterview) {
+    funnelInterview.textContent = entrevistas;
+  }
+
+  if (funnelApproved) {
+    funnelApproved.textContent = aprovados;
+  }
+
+  if (funnelHired) {
+    funnelHired.textContent = contratados;
+
+
+  // =========================================================
+  // TAXAS DE CONVERSÃO
+  // =========================================================
+
+  const interviewConversion =
+    document.getElementById(
+      "interviewConversion"
+    );
+
+  const approvalConversion =
+    document.getElementById(
+      "approvalConversion"
+    );
+
+  const hiringConversion =
+    document.getElementById(
+      "hiringConversion"
+    );
+
+
+  const interviewRate =
+    total > 0
+      ? (entrevistas / total) * 100
+      : 0;
+
+
+  const approvalRate =
+    total > 0
+      ? (aprovados / total) * 100
+      : 0;
+
+
+  const hiringRate =
+    total > 0
+      ? (contratados / total) * 100
+      : 0;
+
+
+  if (interviewConversion) {
+
+    interviewConversion.textContent =
+      `${interviewRate.toFixed(1)}%`;
 
   }
+
+
+  if (approvalConversion) {
+
+    approvalConversion.textContent =
+      `${approvalRate.toFixed(1)}%`;
+
+  }
+
+
+  if (hiringConversion) {
+
+    hiringConversion.textContent =
+      `${hiringRate.toFixed(1)}%`;
+
+  }
+
+}
 
 
   // =========================================================

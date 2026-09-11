@@ -233,74 +233,60 @@
     }
 
     .refresh-button {
-      /* FILTROS */
-
-.filters-box {
-  display: grid;
-  grid-template-columns: 2fr 1fr auto;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 18px;
-  background: #f7f7f7;
-  border-radius: 12px;
-}
-
-.filter-input,
-.filter-select {
-  width: 100%;
-  padding: 13px 15px;
-  border: 1px solid #ddd;
-  border-radius: 9px;
-  background: white;
-  font-size: 14px;
-  outline: none;
-}
-
-.filter-input:focus,
-.filter-select:focus {
-  border-color: #ffd800;
-  box-shadow: 0 0 0 3px rgba(255,216,0,.15);
-}
-
-.clear-filters-button {
-  border: 1px solid #ddd;
-  background: white;
-  padding: 13px 16px;
-  border-radius: 9px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.clear-filters-button:hover {
-  background: #eee;
-}
-
-.results-info {
-  margin-bottom: 15px;
-  color: #777;
-  font-size: 14px;
-}
-
-.candidate-row {
-  cursor: pointer;
-  transition: background .15s;
-}
-
-.candidate-row:hover {
-  background: #fffbea;
-}
-
-@media (max-width: 700px) {
-  .filters-box {
-    grid-template-columns: 1fr;
-  }
-}
       border: none;
       background: #ffd800;
       padding: 10px 15px;
       border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
+    }
+
+    /* FILTROS */
+
+    .filters-box {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 18px;
+      background: #f7f7f7;
+      border-radius: 12px;
+    }
+
+    .filter-input,
+    .filter-select {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      background: white;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: #ffd800;
+      box-shadow: 0 0 0 3px rgba(255,216,0,.15);
+    }
+
+    .clear-filters-button {
+      border: 1px solid #ddd;
+      background: white;
+      padding: 13px 16px;
+      border-radius: 9px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .clear-filters-button:hover {
+      background: #eee;
+    }
+
+    .results-info {
+      margin-bottom: 15px;
+      color: #777;
+      font-size: 14px;
     }
 
     .table-wrapper {
@@ -382,141 +368,284 @@
       .login-box {
         padding: 28px 22px;
       }
+
+      .filters-box {
+        grid-template-columns: 1fr;
+      }
     }
+
+    /* KANBAN */
+
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(230px, 1fr));
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .kanban-column {
+      background: #f4f4f4;
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+      min-height: 420px;
+      padding: 12px;
+      transition: .15s;
+    }
+
+    .kanban-column.drag-over {
+      background: #fffbea;
+      border-color: #ffd800;
+      box-shadow: 0 0 0 2px rgba(255,216,0,.12);
+    }
+
+    .kanban-column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 4px 2px;
+    }
+
+    .kanban-column-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+
+    .kanban-count {
+      min-width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .kanban-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 350px;
+    }
+
+    .kanban-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 14px;
+      cursor: grab;
+      box-shadow: 0 3px 12px rgba(0,0,0,.05);
+      transition:
+        transform .15s,
+        box-shadow .15s,
+        opacity .15s;
+    }
+
+    .kanban-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    }
+
+    .kanban-card.dragging {
+      opacity: .45;
+    }
+
+    .kanban-card-name {
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 7px;
+      word-break: break-word;
+    }
+
+    .kanban-card-info {
+      color: #777;
+      font-size: 12px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .kanban-empty {
+      color: #aaa;
+      text-align: center;
+      font-size: 12px;
+      padding: 25px 8px;
+      border: 1px dashed #ddd;
+      border-radius: 10px;
+    }
+
+    .kanban-discarded {
+      background: #f1f1f1;
+      border-color: #d8d8d8;
+    }
+
+    @media(max-width:900px) {
+      .kanban-board {
+        grid-template-columns: repeat(6,minmax(230px,1fr));
+      }
+    }
+
+    @media(max-width:600px) {
+      .kanban-board {
+        grid-template-columns: repeat(6,minmax(210px,1fr));
+      }
+    }
+
     /* FICHA DO CANDIDATO */
 
-.candidate-row {
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
+    .candidate-row {
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
 
-.candidate-row:hover {
-  background: #fffbe6;
-}
+    .candidate-row:hover {
+      background: #fffbe6;
+    }
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 9999;
-}
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
 
-.modal-overlay.open {
-  display: flex;
-}
+    .modal-overlay.open {
+      display: flex;
+    }
 
-.candidate-modal {
-  position: relative;
-  width: 100%;
-  max-width: 850px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: #fff;
-  border-radius: 18px;
-  padding: 30px;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
-}
+    .candidate-modal {
+      position: relative;
+      width: 100%;
+      max-width: 850px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
+    }
 
-.close-modal {
-  position: absolute;
-  top: 15px;
-  right: 18px;
-  border: none;
-  background: transparent;
-  font-size: 32px;
-  line-height: 1;
-  cursor: pointer;
-  color: #555;
-}
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 18px;
+      border: none;
+      background: transparent;
+      font-size: 32px;
+      line-height: 1;
+      cursor: pointer;
+      color: #555;
+    }
 
-.modal-header {
-  padding-right: 40px;
-  margin-bottom: 25px;
-}
+    .modal-header {
+      padding-right: 40px;
+      margin-bottom: 25px;
+    }
 
-.modal-kicker {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  color: #b08a00;
-  margin-bottom: 6px;
-}
+    .modal-kicker {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #b08a00;
+      margin-bottom: 6px;
+    }
 
-.modal-header h2 {
-  margin: 0 0 10px;
-  font-size: 28px;
-  color: #171717;
-}
+    .modal-header h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      color: #171717;
+    }
 
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
 
-.detail-item {
-  background: #f7f7f7;
-  border-radius: 12px;
-  padding: 15px;
-}
+    .detail-item {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 15px;
+    }
 
-.detail-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #777;
-  margin-bottom: 6px;
-}
+    .detail-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 6px;
+    }
 
-.detail-value {
-  font-size: 15px;
-  color: #222;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
+    .detail-value {
+      font-size: 15px;
+      color: #222;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-.modal-actions {
-  margin-top: 25px;
-}
+    .modal-actions {
+      margin-top: 25px;
+    }
 
-.whatsapp-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 20px;
-  border-radius: 10px;
-  background: #25D366;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 700;
-}
+    .whatsapp-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #25d366;
+      color: white;
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 800;
+    }
 
-@media (max-width: 700px) {
-  .candidate-modal {
-    padding: 22px;
-  }
+    .status-select {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      background: white;
+      font-size: 14px;
+      outline: none;
+    }
 
-  .detail-grid {
-    grid-template-columns: 1fr;
-  }
+    .status-select:focus {
+      border-color: #ffd800;
+      box-shadow: 0 0 0 3px rgba(255,216,0,.15);
+    }
 
-  .modal-header h2 {
-    font-size: 23px;
-  }
-}
+    @media (max-width: 700px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .candidate-modal {
+        padding: 22px;
+      }
+
+      .modal-header h2 {
+        font-size: 23px;
+      }
+    }
   </style>
 </head>
-
 <body>
 
   <!-- LOGIN -->
 
-  <section id="loginScreen" class="login-screen">
+  <div id="loginScreen" class="login-screen">
 
     <div class="login-box">
 
@@ -527,51 +656,58 @@
       <h1>Painel Administrativo</h1>
 
       <p class="login-subtitle">
-        Acesso exclusivo à equipe AFINCO
+        Acesse para gerenciar os candidatos
       </p>
 
       <form id="loginForm">
 
         <div class="field">
           <label for="email">E-mail</label>
+
           <input
             type="email"
             id="email"
+            placeholder="Seu e-mail"
             required
-            placeholder="Digite seu e-mail"
           >
         </div>
 
         <div class="field">
           <label for="password">Senha</label>
+
           <input
             type="password"
             id="password"
+            placeholder="Sua senha"
             required
-            placeholder="Digite sua senha"
           >
         </div>
 
         <button
           type="submit"
-          id="loginButton"
           class="login-button"
+          id="loginButton"
         >
-          ENTRAR NO PAINEL
+          Entrar
         </button>
-
-        <div id="loginMessage" class="login-message"></div>
 
       </form>
 
+      <div
+        id="loginMessage"
+        class="login-message"
+      ></div>
+
     </div>
 
-  </section>
+  </div>
 
 
   <!-- DASHBOARD -->
 
-  <section id="dashboard" class="dashboard">
+  <div id="dashboard" class="dashboard">
+
+    <!-- TOPBAR -->
 
     <header class="topbar">
 
@@ -579,51 +715,110 @@
         AFINCO <span>RECRUTAMENTO</span>
       </div>
 
-      <button id="logoutButton" class="logout-button">
+      <button
+        id="logoutButton"
+        class="logout-button"
+      >
         Sair
       </button>
 
     </header>
 
 
+    <!-- CONTEÚDO -->
+
     <main class="content">
 
       <div class="page-title">
+
         <h1>Dashboard</h1>
-        <p>Visão geral das candidaturas recebidas.</p>
-      </div>
 
-
-      <div class="stats">
-
-        <div class="stat-card">
-          <div class="label">Total de candidatos</div>
-          <div id="totalCandidates" class="number">0</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="label">Novos</div>
-          <div id="newCandidates" class="number">0</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="label">Em análise</div>
-          <div id="analysisCandidates" class="number">0</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="label">Contratados</div>
-          <div id="hiredCandidates" class="number">0</div>
-        </div>
+        <p>
+          Gerencie os candidatos e acompanhe o processo seletivo.
+        </p>
 
       </div>
 
 
-      <div class="candidates-box">
+      <!-- ESTATÍSTICAS -->
+
+      <section class="stats">
+
+        <div class="stat-card">
+
+          <div class="label">
+            Total de candidatos
+          </div>
+
+          <div
+            class="number"
+            id="totalCandidates"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="label">
+            Novos
+          </div>
+
+          <div
+            class="number"
+            id="newCandidates"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="label">
+            Em análise
+          </div>
+
+          <div
+            class="number"
+            id="analysisCandidates"
+          >
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="label">
+            Contratados
+          </div>
+
+          <div
+            class="number"
+            id="hiredCandidates"
+          >
+            0
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- CANDIDATOS -->
+
+      <section class="candidates-box">
 
         <div class="box-header">
 
-          <h2>Últimos candidatos</h2>
+          <h2>
+            Candidatos
+          </h2>
 
           <button
             id="refreshButton"
@@ -633,727 +828,1849 @@
           </button>
 
         </div>
-<div class="filters-box">
 
-  <input
-    type="text"
-    id="searchCandidates"
-    class="filter-input"
-    placeholder="🔎 Buscar por nome, WhatsApp, e-mail ou cidade..."
-  >
 
-  <select
-    id="statusFilter"
-    class="filter-select"
-  >
-    <option value="">Todos os status</option>
-    <option value="novo">Novo</option>
-    <option value="em análise">Em análise</option>
-    <option value="entrevista">Entrevista</option>
-    <option value="aprovado">Aprovado</option>
-    <option value="contratado">Contratado</option>
-    <option value="reprovado">Reprovado</option>
-  </select>
+        <!-- FILTROS -->
 
-  <button
-    id="clearFiltersButton"
-    class="clear-filters-button"
-    type="button"
-  >
-    Limpar filtros
-  </button>
+        <div class="filters-box">
 
-</div>
+          <input
+            type="text"
+            id="searchCandidates"
+            class="filter-input"
+            placeholder="Buscar por nome, WhatsApp, e-mail ou cidade..."
+          >
 
-<div id="resultsInfo" class="results-info">
-  Carregando...
-</div>
 
-        <div id="candidatesContainer">
-          
+          <select
+            id="statusFilter"
+            class="filter-select"
+          >
+
+            <option value="">
+              Todos os status
+            </option>
+
+            <option value="novo">
+              Novo
+            </option>
+
+            <option value="em análise">
+              Em análise
+            </option>
+
+            <option value="entrevista">
+              Entrevista
+            </option>
+
+            <option value="aprovado">
+              Aprovado
+            </option>
+
+            <option value="contratado">
+              Contratado
+            </option>
+
+            <option value="reprovado">
+              Reprovado
+            </option>
+
+            <option value="descartado">
+              Descartado
+            </option>
+
+          </select>
+
+
+          <button
+            id="clearFiltersButton"
+            class="clear-filters-button"
+          >
+            Limpar filtros
+          </button>
+
+        </div>
+
+
+        <div
+          id="resultsInfo"
+          class="results-info"
+        >
+          Carregando candidatos...
+        </div>
+
+
+        <!-- KANBAN -->
+
+        <div
+          id="candidatesContainer"
+          class="kanban-board"
+        >
+
           <div class="loading">
             Carregando candidatos...
           </div>
 
         </div>
 
-      </div>
+      </section>
 
     </main>
 
-    <!-- FICHA DO CANDIDATO -->
-<div id="candidateModal" class="modal-overlay" aria-hidden="true">
-  <div class="candidate-modal">
+  </div>
 
-    <button
-      id="closeCandidateModal"
-      class="close-modal"
-      type="button"
-      aria-label="Fechar"
-    >
-      ×
-    </button>
 
-    <div class="modal-header">
-      <div class="modal-kicker">FICHA DO CANDIDATO</div>
+  <!-- MODAL / FICHA DO CANDIDATO -->
 
-      <h2 id="modalCandidateName">-</h2>
+  <div
+    id="candidateModal"
+    class="modal-overlay"
+  >
 
-     <select id="modalCandidateStatus" class="status-select">
-    <option value="novo">Novo</option>
-    <option value="em análise">Em análise</option>
-    <option value="entrevista">Entrevista</option>
-    <option value="aprovado">Aprovado</option>
-    <option value="contratado">Contratado</option>
-    <option value="reprovado">Reprovado</option>
-</select>
-    </div>
+    <div class="candidate-modal">
 
-    <div
-      class="detail-grid"
-      id="candidateDetails"
-    ></div>
-
-    <div class="modal-actions">
-      <a
-        id="modalWhatsapp"
-        class="whatsapp-button"
-        href="#"
-        target="_blank"
-        rel="noopener"
+      <button
+        id="closeModal"
+        class="close-modal"
+        type="button"
+        aria-label="Fechar"
       >
-        💬 Conversar no WhatsApp
-      </a>
+        &times;
+      </button>
+
+
+      <div class="modal-header">
+
+        <div class="modal-kicker">
+          FICHA DO CANDIDATO
+        </div>
+
+        <h2 id="modalCandidateName">
+          Candidato
+        </h2>
+
+      </div>
+
+
+      <div class="detail-grid">
+
+
+        <!-- NOME -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Nome completo
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateFullName"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- WHATSAPP -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            WhatsApp
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateWhatsapp"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- E-MAIL -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            E-mail
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateEmail"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- CIDADE -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Cidade
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateCity"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- IDADE -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Idade
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateAge"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- TRABALHANDO -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Está trabalhando atualmente?
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateWorking"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- EXPERIÊNCIA -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Experiência
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateExperience"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- DETALHES EXPERIÊNCIA -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Detalhes da experiência
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateExperienceDetails"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- DISPONIBILIDADE -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Disponibilidade
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateAvailability"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- MOTIVO -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Motivo
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateReason"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- CONSENTIMENTO -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Consentimento
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateConsent"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- DATA -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Data da candidatura
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateDate"
+          >
+            -
+          </div>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="detail-item">
+
+          <div class="detail-label">
+            Status
+          </div>
+
+          <select
+            id="modalCandidateStatus"
+            class="status-select"
+          >
+
+            <option value="novo">
+              Novo
+            </option>
+
+            <option value="em análise">
+              Em análise
+            </option>
+
+            <option value="entrevista">
+              Entrevista
+            </option>
+
+            <option value="aprovado">
+              Aprovado
+            </option>
+
+            <option value="contratado">
+              Contratado
+            </option>
+
+            <option value="reprovado">
+              Reprovado
+            </option>
+
+            <option value="descartado">
+              Descartado
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- AÇÕES -->
+
+      <div class="modal-actions">
+
+        <a
+          id="modalWhatsappButton"
+          class="whatsapp-button"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          💬 Conversar no WhatsApp
+        </a>
+
+      </div>
+
     </div>
 
   </div>
-</div>
-    
-  </section>
-
-
   <script>
 
-    const SUPABASE_URL =
-      "https://zinuptosnawlpatngaav.supabase.co";
+  // =========================================================
+  // CONFIGURAÇÃO SUPABASE
+  // =========================================================
 
-    const SUPABASE_KEY =
-      "sb_publishable_cm9yih0AqzRv-U1uePYWAw_257kPPx3";
+  const SUPABASE_URL = "https://zinuptosnawlpatngaav.supabase.co";
 
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_cm9yih0AqzRv-U1uePYWAw_257kPPx3";
 
-
-    const loginScreen =
-      document.getElementById("loginScreen");
-
-    const dashboard =
-      document.getElementById("dashboard");
-
-    const loginForm =
-      document.getElementById("loginForm");
-
-    const loginButton =
-      document.getElementById("loginButton");
-
-    const loginMessage =
-      document.getElementById("loginMessage");
-
-    const candidatesContainer =
-      document.getElementById("candidatesContainer");
-
-    const searchCandidates =
-  document.getElementById("searchCandidates");
-
-const statusFilter =
-  document.getElementById("statusFilter");
-
-const clearFiltersButton =
-  document.getElementById("clearFiltersButton");
-
-const resultsInfo =
-  document.getElementById("resultsInfo");
-
-let allCandidates = [];
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
-    function showLoginMessage(message) {
+  // =========================================================
+  // ELEMENTOS DA PÁGINA
+  // =========================================================
 
-      loginMessage.textContent = message;
-      loginMessage.className =
-        "login-message error";
+  const loginScreen =
+    document.getElementById("loginScreen");
 
-    }
+  const dashboard =
+    document.getElementById("dashboard");
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const loginButton =
+    document.getElementById("loginButton");
+
+  const loginMessage =
+    document.getElementById("loginMessage");
+
+  const logoutButton =
+    document.getElementById("logoutButton");
+
+  const refreshButton =
+    document.getElementById("refreshButton");
+
+  const candidatesContainer =
+    document.getElementById("candidatesContainer");
+
+  const searchCandidates =
+    document.getElementById("searchCandidates");
+
+  const statusFilter =
+    document.getElementById("statusFilter");
+
+  const clearFiltersButton =
+    document.getElementById("clearFiltersButton");
+
+  const resultsInfo =
+    document.getElementById("resultsInfo");
 
 
-    async function login(email, password) {
+  // =========================================================
+  // ESTATÍSTICAS
+  // =========================================================
+
+  const totalCandidates =
+    document.getElementById("totalCandidates");
+
+  const newCandidates =
+    document.getElementById("newCandidates");
+
+  const analysisCandidates =
+    document.getElementById("analysisCandidates");
+
+  const hiredCandidates =
+    document.getElementById("hiredCandidates");
+
+
+  // =========================================================
+  // MODAL
+  // =========================================================
+
+  const candidateModal =
+    document.getElementById("candidateModal");
+
+  const closeModal =
+    document.getElementById("closeModal");
+
+  const modalCandidateName =
+    document.getElementById("modalCandidateName");
+
+  const modalCandidateFullName =
+    document.getElementById("modalCandidateFullName");
+
+  const modalCandidateWhatsapp =
+    document.getElementById("modalCandidateWhatsapp");
+
+  const modalCandidateEmail =
+    document.getElementById("modalCandidateEmail");
+
+  const modalCandidateCity =
+    document.getElementById("modalCandidateCity");
+
+  const modalCandidateAge =
+    document.getElementById("modalCandidateAge");
+
+  const modalCandidateWorking =
+    document.getElementById("modalCandidateWorking");
+
+  const modalCandidateExperience =
+    document.getElementById("modalCandidateExperience");
+
+  const modalCandidateExperienceDetails =
+    document.getElementById("modalCandidateExperienceDetails");
+
+  const modalCandidateAvailability =
+    document.getElementById("modalCandidateAvailability");
+
+  const modalCandidateReason =
+    document.getElementById("modalCandidateReason");
+
+  const modalCandidateConsent =
+    document.getElementById("modalCandidateConsent");
+
+  const modalCandidateDate =
+    document.getElementById("modalCandidateDate");
+
+  const modalCandidateStatus =
+    document.getElementById("modalCandidateStatus");
+
+  const modalWhatsappButton =
+    document.getElementById("modalWhatsappButton");
+
+
+  // =========================================================
+  // VARIÁVEIS
+  // =========================================================
+
+  let allCandidates = [];
+
+  let currentCandidateId = null;
+
+  let draggedCandidateId = null;
+
+
+  // =========================================================
+  // MENSAGEM DE LOGIN
+  // =========================================================
+
+  function showLoginMessage(message, type = "error") {
+
+    loginMessage.textContent = message;
+
+    loginMessage.className =
+      "login-message " + type;
+
+  }
+
+
+  function clearLoginMessage() {
+
+    loginMessage.textContent = "";
+
+    loginMessage.className =
+      "login-message";
+
+  }
+
+
+  // =========================================================
+  // LOGIN
+  // =========================================================
+
+  loginForm.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+      clearLoginMessage();
 
       loginButton.disabled = true;
-      loginButton.textContent = "ENTRANDO...";
 
-      loginMessage.className = "login-message";
-      loginMessage.textContent = "";
-
-
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+      loginButton.textContent =
+        "Entrando...";
 
 
-      if (error) {
+      const email =
+        document.getElementById("email").value.trim();
 
-        showLoginMessage(
-          "E-mail ou senha incorretos."
-        );
-
-        loginButton.disabled = false;
-        loginButton.textContent =
-          "ENTRAR NO PAINEL";
-
-        return;
-
-      }
+      const password =
+        document.getElementById("password").value;
 
 
-      loginScreen.style.display = "none";
-      dashboard.style.display = "block";
+      const {
+        data,
+        error
+      } = await supabaseClient.auth.signInWithPassword({
 
-      await loadCandidates();
+        email,
+        password
 
-    }
-
-
-    loginForm.addEventListener(
-      "submit",
-      async function(event) {
-
-        event.preventDefault();
-
-        const email =
-          document.getElementById("email").value.trim();
-
-        const password =
-          document.getElementById("password").value;
-
-        await login(email, password);
-
-      }
-    );
-
-
-    async function loadCandidates() {
-
-      candidatesContainer.innerHTML =
-        '<div class="loading">Carregando candidatos...</div>';
-
-
-      const { data, error } =
-        await supabaseClient
-          .from("Candidatos")
-          .select("*")
-          .order("created_at", {
-            ascending: false
-          });
+      });
 
 
       if (error) {
 
         console.error(error);
 
-        candidatesContainer.innerHTML = `
-          <div class="error-box">
-            Não foi possível carregar os candidatos.
-            <br><br>
-            Verifique as permissões do Supabase.
-          </div>
-        `;
+        showLoginMessage(
+          "E-mail ou senha inválidos."
+        );
+
+        loginButton.disabled = false;
+
+        loginButton.textContent =
+          "Entrar";
 
         return;
 
       }
 
 
-      updateStats(data);
-      allCandidates = data;
-
-updateStats(data);
-applyFilters();
-
-      renderCandidates(data);
-
-    }
+      console.log(
+        "Login realizado:",
+        data.user
+      );
 
 
-    function updateStats(candidates) {
-
-      document.getElementById(
-        "totalCandidates"
-      ).textContent = candidates.length;
-
-
-      const newCount =
-        candidates.filter(
-          candidate =>
-            !candidate.status ||
-            candidate.status.toLowerCase() === "novo"
-        ).length;
-
-
-      const analysisCount =
-        candidates.filter(
-          candidate =>
-            candidate.status &&
-            candidate.status.toLowerCase() === "em análise"
-        ).length;
-
-
-      const hiredCount =
-        candidates.filter(
-          candidate =>
-            candidate.status &&
-            candidate.status.toLowerCase() === "contratado"
-        ).length;
-
-
-      document.getElementById(
-        "newCandidates"
-      ).textContent = newCount;
-
-
-      document.getElementById(
-        "analysisCandidates"
-      ).textContent = analysisCount;
-
-
-      document.getElementById(
-        "hiredCandidates"
-      ).textContent = hiredCount;
+      await showDashboard();
 
     }
-
- function applyFilters() {
-
-  const search =
-    searchCandidates.value
-      .trim()
-      .toLowerCase();
-
-  const selectedStatus =
-    statusFilter.value
-      .trim()
-      .toLowerCase();
-
-  const filteredCandidates =
-    allCandidates.filter(candidate => {
-
-      const searchableText = [
-        candidate.nome,
-        candidate.whatsapp,
-        candidate.email,
-        candidate.cidade
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      const candidateStatus =
-        (candidate.status || "novo")
-          .trim()
-          .toLowerCase();
-
-      const matchesSearch =
-        !search ||
-        searchableText.includes(search);
-
-      const matchesStatus =
-        !selectedStatus ||
-        candidateStatus === selectedStatus;
-
-      return matchesSearch && matchesStatus;
-    });
-
-  resultsInfo.textContent =
-    `Exibindo ${filteredCandidates.length} de ${allCandidates.length} candidato(s)`;
-
-  renderCandidates(filteredCandidates);
-}
-    function renderCandidates(candidates) {
-     
-
-      if (!candidates.length) {
-
-        candidatesContainer.innerHTML = `
-          <div class="empty">
-            Nenhum candidato cadastrado ainda.
-          </div>
-        `;
-
-        return;
-
-      }
+  );
 
 
-      let html = `
-        <div class="table-wrapper">
+  // =========================================================
+  // LOGOUT
+  // =========================================================
 
-          <table>
+  logoutButton.addEventListener(
+    "click",
+    async () => {
 
-            <thead>
+      await supabaseClient.auth.signOut();
 
-              <tr>
-                <th>Nome</th>
-                <th>WhatsApp</th>
-                <th>E-mail</th>
-                <th>Cidade</th>
-                <th>Idade</th>
-                <th>Status</th>
-                <th>Data</th>
-              </tr>
+      dashboard.style.display = "none";
 
-            </thead>
+      loginScreen.style.display = "flex";
 
-            <tbody>
-      `;
+      loginForm.reset();
 
+      clearLoginMessage();
 
-      candidates.forEach(candidate => {
-
-        const date =
-          candidate.created_at
-            ? new Date(
-                candidate.created_at
-              ).toLocaleDateString("pt-BR")
-            : "-";
+    }
+  );
 
 
-        html += `
-      <tr
-  class="candidate-row"
-  data-candidate-id="${candidate.id}"
->
+  // =========================================================
+  // MOSTRAR DASHBOARD
+  // =========================================================
 
-            <td>
-              <strong>
-                ${escapeHtml(candidate.nome || "-")}
-              </strong>
-            </td>
+  async function showDashboard() {
 
-            <td>
-              ${escapeHtml(candidate.whatsapp || "-")}
-            </td>
+    loginScreen.style.display =
+      "none";
 
-            <td>
-              ${escapeHtml(candidate.email || "-")}
-            </td>
+    dashboard.style.display =
+      "block";
 
-            <td>
-              ${escapeHtml(candidate.cidade || "-")}
-            </td>
+    loginButton.disabled =
+      false;
 
-            <td>
-              ${escapeHtml(String(candidate.idade || "-"))}
-            </td>
+    loginButton.textContent =
+      "Entrar";
 
-            <td>
-              <span class="status">
-                ${escapeHtml(candidate.status || "Novo")}
-              </span>
-            </td>
+    await loadCandidates();
 
-            <td>
-              ${date}
-            </td>
+  }
 
-          </tr>
-        `;
 
+  // =========================================================
+  // CARREGAR CANDIDATOS
+  // =========================================================
+
+  async function loadCandidates() {
+
+    candidatesContainer.innerHTML = `
+      <div class="loading">
+        Carregando candidatos...
+      </div>
+    `;
+
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("Candidatos")
+      .select("*")
+      .order("created_at", {
+        ascending: false
       });
 
 
-      html += `
-            </tbody>
+    if (error) {
 
-          </table>
+      console.error(
+        "Erro ao carregar candidatos:",
+        error
+      );
 
+      candidatesContainer.innerHTML = `
+        <div class="error-box">
+          Não foi possível carregar os candidatos.
+          Verifique as permissões do Supabase.
         </div>
       `;
 
+      resultsInfo.textContent =
+        "Erro ao carregar candidatos.";
 
-      candidatesContainer.innerHTML = html;
-candidatesContainer
-  .querySelectorAll(".candidate-row")
-  .forEach(row => {
+      return;
 
-    row.addEventListener(
-      "click",
-      function() {
+    }
 
-        const candidate =
-          allCandidates.find(
-            item =>
-              String(item.id) ===
-              String(row.dataset.candidateId)
-          );
 
-        if (candidate) {
-          openCandidateModal(candidate);
-        }
+    allCandidates =
+      Array.isArray(data)
+        ? data
+        : [];
 
-      }
+
+    updateStats(
+      allCandidates
     );
 
-  });
-      
-      candidatesContainer.querySelectorAll(".candidate-row").forEach(row => {
-  row.addEventListener("click", () => {
-    const candidate = candidates.find(
-      item => String(item.id) === String(row.dataset.candidateId)
-    );
-
-    if (candidate) {
-      openCandidateModal(candidate);
-    }
-  });
-});
-
-    }
-
-
-    function escapeHtml(value) {
-
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }// FICHA DO CANDIDATO
-
-const candidateModal =
-  document.getElementById("candidateModal");
-
-const candidateDetails =
-  document.getElementById("candidateDetails");
-
-const modalCandidateName =
-  document.getElementById("modalCandidateName");
-
-const modalCandidateStatus =
-  document.getElementById("modalCandidateStatus");
-
-const modalWhatsapp =
-  document.getElementById("modalWhatsapp");
-
-const closeCandidateModal =
-  document.getElementById("closeCandidateModal");
-
-function formatValue(value) {
-  if (
-    value === null ||
-    value === undefined ||
-    String(value).trim() === ""
-  ) {
-    return "-";
-  }
-
-  return String(value);
-}
-
-let currentCandidateId = null;
-    
-function openCandidateModal(candidate) {
-
-currentCandidateId = candidate.id;
-  modalCandidateName.textContent =
-    formatValue(candidate.nome);
-
- modalCandidateStatus.value =
-    (candidate.status || "novo").toLowerCase();
-  const phone =
-    String(candidate.whatsapp || "").replace(/\D/g, "");
-
-  if (phone) {
-    modalWhatsapp.href =
-      `https://wa.me/55${phone}`;
-
-    modalWhatsapp.style.display =
-      "inline-flex";
-  } else {
-    modalWhatsapp.style.display =
-      "none";
-  }
-
-  const date =
-    candidate.created_at
-      ? new Date(candidate.created_at)
-          .toLocaleString("pt-BR")
-      : "-";
-
-  const details = [
-    ["WhatsApp", candidate.whatsapp],
-    ["E-mail", candidate.email],
-    ["Cidade", candidate.cidade],
-    ["Idade", candidate.idade],
-    ["Está trabalhando?", candidate.trabalhando],
-    ["Experiência", candidate.experiencia],
-    ["Detalhes da experiência", candidate.detalhes_experiencia],
-    ["Disponibilidade", candidate.disponibilidade],
-    ["Motivo para buscar oportunidade", candidate.motivo],
-    ["Consentimento", candidate.consentimento ? "Autorizado" : "-"],
-    ["Data da candidatura", date]
-  ];
-
-  candidateDetails.innerHTML =
-    details.map(([label, value]) => `
-      <div class="detail-item">
-        <div class="detail-label">
-          ${escapeHtml(label)}
-        </div>
-
-        <div class="detail-value">
-          ${escapeHtml(formatValue(value))}
-        </div>
-      </div>
-    `).join("");
-
-  candidateModal.classList.add("open");
-
-  candidateModal.setAttribute(
-    "aria-hidden",
-    "false"
-  );
-}
-
-function closeCandidateModalFn() {
-
-  candidateModal.classList.remove("open");
-
-  candidateModal.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-}
-
-closeCandidateModal.addEventListener(
-  "click",
-  closeCandidateModalFn
-);
-
-modalCandidateStatus.addEventListener("change", async () => {
-
-  if (!currentCandidateId) return;
-
-  const newStatus = modalCandidateStatus.value;
-
-  const { error } = await supabaseClient
-    .from("Candidatos")
-    .update({
-      status: newStatus
-    })
-    .eq("id", currentCandidateId);
-
-  if (error) {
-    console.error(error);
-    alert("Não foi possível atualizar o status.");
-    return;
-  }
-
-  await loadCandidates();
-
-});
-    
-candidateModal.addEventListener(
-  "click",
-  event => {
-    if (event.target === candidateModal) {
-      closeCandidateModalFn();
-    }
-  }
-);
-
-document.addEventListener(
-  "keydown",
-  event => {
-    if (event.key === "Escape") {
-      closeCandidateModalFn();
-    }
-  }
-);
-
-
-    document
-      .getElementById("refreshButton")
-      .addEventListener(
-        "click",
-        loadCandidates
-      );
-
-
-    document
-      .getElementById("logoutButton")
-      .addEventListener(
-        "click",
-        async function() {
-
-          await supabaseClient.auth.signOut();
-
-          dashboard.style.display = "none";
-          loginScreen.style.display = "flex";
-
-          loginForm.reset();
-
-        }
-      );
-
-searchCandidates.addEventListener(
-  "input",
-  applyFilters
-);
-
-statusFilter.addEventListener(
-  "change",
-  applyFilters
-);
-
-clearFiltersButton.addEventListener(
-  "click",
-  function() {
-
-    searchCandidates.value = "";
-    statusFilter.value = "";
 
     applyFilters();
+
   }
-);
-    async function checkSession() {
-      
-
-      const {
-        data: { session }
-      } = await supabaseClient.auth.getSession();
 
 
-      if (session) {
+  // =========================================================
+  // ATUALIZAR ESTATÍSTICAS
+  // =========================================================
 
-        loginScreen.style.display = "none";
-        dashboard.style.display = "block";
+  function updateStats(candidates) {
 
-        await loadCandidates();
+    totalCandidates.textContent =
+      candidates.length;
+
+
+    newCandidates.textContent =
+      candidates.filter(
+        candidate =>
+          candidate.status === "novo"
+      ).length;
+
+
+    analysisCandidates.textContent =
+      candidates.filter(
+        candidate =>
+          candidate.status === "em análise"
+      ).length;
+
+
+    hiredCandidates.textContent =
+      candidates.filter(
+        candidate =>
+          candidate.status === "contratado"
+      ).length;
+
+  }
+
+
+  // =========================================================
+  // FILTROS
+  // =========================================================
+
+  function applyFilters() {
+
+    const search =
+      searchCandidates.value
+        .trim()
+        .toLowerCase();
+
+
+    const selectedStatus =
+      statusFilter.value;
+
+
+    let filtered =
+      allCandidates.filter(
+        candidate => {
+
+          const nome =
+            String(
+              candidate.nome || ""
+            ).toLowerCase();
+
+
+          const whatsapp =
+            String(
+              candidate.whatsapp || ""
+            ).toLowerCase();
+
+
+          const email =
+            String(
+              candidate.email || ""
+            ).toLowerCase();
+
+
+          const cidade =
+            String(
+              candidate.cidade || ""
+            ).toLowerCase();
+
+
+          const matchesSearch =
+            !search ||
+            nome.includes(search) ||
+            whatsapp.includes(search) ||
+            email.includes(search) ||
+            cidade.includes(search);
+
+
+          const matchesStatus =
+            !selectedStatus ||
+            candidate.status === selectedStatus;
+
+
+          return (
+            matchesSearch &&
+            matchesStatus
+          );
+
+        }
+      );
+
+
+    resultsInfo.textContent =
+      `${filtered.length} candidato${filtered.length === 1 ? "" : "s"} encontrado${filtered.length === 1 ? "" : "s"}.`;
+
+
+    renderCandidates(
+      filtered
+    );
+
+  }
+
+
+  searchCandidates.addEventListener(
+    "input",
+    applyFilters
+  );
+
+
+  statusFilter.addEventListener(
+    "change",
+    applyFilters
+  );
+
+
+  clearFiltersButton.addEventListener(
+    "click",
+    () => {
+
+      searchCandidates.value = "";
+
+      statusFilter.value = "";
+
+      applyFilters();
+
+    }
+  );
+
+
+  refreshButton.addEventListener(
+    "click",
+    async () => {
+
+      refreshButton.disabled =
+        true;
+
+      refreshButton.textContent =
+        "Atualizando...";
+
+
+      await loadCandidates();
+
+
+      refreshButton.disabled =
+        false;
+
+      refreshButton.textContent =
+        "Atualizar";
+
+    }
+  );
+
+
+  // =========================================================
+  // KANBAN
+  // =========================================================
+
+  const kanbanColumns = [
+
+    {
+      status: "novo",
+      title: "Novos"
+    },
+
+    {
+      status: "em análise",
+      title: "Em análise"
+    },
+
+    {
+      status: "entrevista",
+      title: "Entrevista"
+    },
+
+    {
+      status: "aprovado",
+      title: "Aprovados"
+    },
+
+    {
+      status: "contratado",
+      title: "Contratados"
+    },
+
+    {
+      status: "descartado",
+      title: "Descartados"
+    }
+
+  ];
+
+
+  // =========================================================
+  // RENDERIZAR KANBAN
+  // =========================================================
+
+  function renderCandidates(
+    candidates
+  ) {
+
+    candidatesContainer.innerHTML = "";
+
+
+    const board =
+      document.createElement("div");
+
+    board.className =
+      "kanban-board";
+
+
+    kanbanColumns.forEach(
+      column => {
+
+        const columnElement =
+          document.createElement("div");
+
+        columnElement.className =
+          "kanban-column";
+
+        columnElement.dataset.status =
+          column.status;
+
+
+        const candidatesInColumn =
+          candidates.filter(
+            candidate => {
+
+              let status =
+                candidate.status || "novo";
+
+
+              /*
+               * Status antigo "reprovado"
+               * passa a ser exibido em
+               * Descartados.
+               */
+
+              if (
+                status === "reprovado"
+              ) {
+
+                status =
+                  "descartado";
+
+              }
+
+
+              return (
+                status ===
+                column.status
+              );
+
+            }
+          );
+
+
+        columnElement.innerHTML = `
+
+          <div class="kanban-column-header">
+
+            <div class="kanban-column-title">
+              ${column.title}
+            </div>
+
+            <div class="kanban-count">
+              ${candidatesInColumn.length}
+            </div>
+
+          </div>
+
+          <div
+            class="kanban-cards"
+            data-status="${column.status}"
+          ></div>
+
+        `;
+
+
+        const cardsContainer =
+          columnElement.querySelector(
+            ".kanban-cards"
+          );
+
+
+        if (
+          candidatesInColumn.length === 0
+        ) {
+
+          cardsContainer.innerHTML = `
+            <div class="kanban-empty">
+              Nenhum candidato
+            </div>
+          `;
+
+        }
+
+
+        candidatesInColumn.forEach(
+          candidate => {
+
+            const card =
+              createCandidateCard(
+                candidate
+              );
+
+            cardsContainer.appendChild(
+              card
+            );
+
+          }
+        );
+
+
+        board.appendChild(
+          columnElement
+        );
 
       }
+    );
+
+
+    candidatesContainer.appendChild(
+      board
+    );
+
+
+    setupKanbanEvents();
+
+  }
+
+
+  // =========================================================
+  // CRIAR CARD
+  // =========================================================
+
+  function createCandidateCard(
+    candidate
+  ) {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "kanban-card";
+
+
+    if (
+      candidate.status === "descartado" ||
+      candidate.status === "reprovado"
+    ) {
+
+      card.classList.add(
+        "kanban-discarded"
+      );
 
     }
 
 
-    checkSession();
+    card.draggable =
+      true;
 
-  </script>
 
+    card.dataset.id =
+      candidate.id;
+
+
+    const nome =
+      candidate.nome ||
+      "Sem nome";
+
+
+    const cidade =
+      candidate.cidade ||
+      "Cidade não informada";
+
+
+    const whatsapp =
+      candidate.whatsapp ||
+      "WhatsApp não informado";
+
+
+    const idade =
+      candidate.idade
+        ? `${candidate.idade} anos`
+        : "Idade não informada";
+
+
+    card.innerHTML = `
+
+      <div class="kanban-card-name">
+        ${escapeHtml(nome)}
+      </div>
+
+      <div class="kanban-card-info">
+        📍 ${escapeHtml(cidade)}
+      </div>
+
+      <div class="kanban-card-info">
+        📱 ${escapeHtml(whatsapp)}
+      </div>
+
+      <div class="kanban-card-info">
+        👤 ${escapeHtml(idade)}
+      </div>
+
+    `;
+
+
+    card.addEventListener(
+      "click",
+      () => {
+
+        openCandidateModal(
+          candidate
+        );
+
+      }
+    );
+
+
+    return card;
+
+  }
+
+
+  // =========================================================
+  // EVENTOS DO KANBAN
+  // =========================================================
+
+  function setupKanbanEvents() {
+
+    const cards =
+      document.querySelectorAll(
+        ".kanban-card"
+      );
+
+
+    const columns =
+      document.querySelectorAll(
+        ".kanban-column"
+      );
+
+
+    cards.forEach(
+      card => {
+
+        card.addEventListener(
+          "dragstart",
+          event => {
+
+            draggedCandidateId =
+              card.dataset.id;
+
+
+            card.classList.add(
+              "dragging"
+            );
+
+
+            event.dataTransfer.effectAllowed =
+              "move";
+
+
+            event.dataTransfer.setData(
+              "text/plain",
+              draggedCandidateId
+            );
+
+          }
+        );
+
+
+        card.addEventListener(
+          "dragend",
+          () => {
+
+            card.classList.remove(
+              "dragging"
+            );
+
+            draggedCandidateId =
+              null;
+
+          }
+        );
+
+      }
+    );
+
+
+    columns.forEach(
+      column => {
+
+        column.addEventListener(
+          "dragover",
+          event => {
+
+            event.preventDefault();
+
+            column.classList.add(
+              "drag-over"
+            );
+
+            event.dataTransfer.dropEffect =
+              "move";
+
+          }
+        );
+
+
+        column.addEventListener(
+          "dragleave",
+          event => {
+
+            if (
+              !column.contains(
+                event.relatedTarget
+              )
+            ) {
+
+              column.classList.remove(
+                "drag-over"
+              );
+
+            }
+
+          }
+        );
+
+
+        column.addEventListener(
+          "drop",
+          async event => {
+
+            event.preventDefault();
+
+
+            column.classList.remove(
+              "drag-over"
+            );
+
+
+            const candidateId =
+              event.dataTransfer.getData(
+                "text/plain"
+              ) ||
+              draggedCandidateId;
+
+
+            const newStatus =
+              column.dataset.status;
+
+
+            if (
+              !candidateId ||
+              !newStatus
+            ) {
+
+              return;
+
+            }
+
+
+            await moveCandidate(
+              candidateId,
+              newStatus
+            );
+
+          }
+        );
+
+      }
+    );
+
+  }
+
+
+  // =========================================================
+  // MOVER CANDIDATO
+  // =========================================================
+
+  async function moveCandidate(
+    candidateId,
+    newStatus
+  ) {
+
+    const candidate =
+      allCandidates.find(
+        item =>
+          String(item.id) ===
+          String(candidateId)
+      );
+
+
+    if (!candidate) {
+
+      return;
+
+    }
+
+
+    const oldStatus =
+      candidate.status;
+
+
+    if (
+      oldStatus === newStatus
+    ) {
+
+      return;
+
+    }
+
+
+    const {
+      error
+    } = await supabaseClient
+      .from("Candidatos")
+      .update({
+        status: newStatus
+      })
+      .eq(
+        "id",
+        candidateId
+      );
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao atualizar status:",
+        error
+      );
+
+      alert(
+        "Não foi possível mover o candidato."
+      );
+
+      return;
+
+    }
+
+
+    candidate.status =
+      newStatus;
+
+
+    updateStats(
+      allCandidates
+    );
+
+
+    applyFilters();
+
+  }
+
+
+  // =========================================================
+  // ABRIR FICHA
+  // =========================================================
+
+  function openCandidateModal(
+    candidate
+  ) {
+
+    currentCandidateId =
+      candidate.id;
+
+
+    modalCandidateName.textContent =
+      candidate.nome ||
+      "Candidato";
+
+
+    modalCandidateFullName.textContent =
+      candidate.nome ||
+      "-";
+
+
+    modalCandidateWhatsapp.textContent =
+      candidate.whatsapp ||
+      "-";
+
+
+    modalCandidateEmail.textContent =
+      candidate.email ||
+      "-";
+
+
+    modalCandidateCity.textContent =
+      candidate.cidade ||
+      "-";
+
+
+    modalCandidateAge.textContent =
+      candidate.idade ||
+      "-";
+
+
+    modalCandidateWorking.textContent =
+      candidate.trabalhando ||
+      "-";
+
+
+    modalCandidateExperience.textContent =
+      candidate.experiencia ||
+      "-";
+
+
+    modalCandidateExperienceDetails.textContent =
+      candidate.detalhes_experiencia ||
+      "-";
+
+
+    modalCandidateAvailability.textContent =
+      candidate.disponibilidade ||
+      "-";
+
+
+    modalCandidateReason.textContent =
+      candidate.motivo ||
+      "-";
+
+
+    modalCandidateConsent.textContent =
+      candidate.consentimento ||
+      "-";
+
+
+    modalCandidateDate.textContent =
+      formatDate(
+        candidate.created_at
+      );
+
+
+    let status =
+      candidate.status ||
+      "novo";
+
+
+    if (
+      status === "reprovado"
+    ) {
+
+      status =
+        "descartado";
+
+    }
+
+
+    modalCandidateStatus.value =
+      status;
+
+
+    const whatsapp =
+      String(
+        candidate.whatsapp || ""
+      )
+      .replace(
+        /\D/g,
+        ""
+      );
+
+
+    if (whatsapp) {
+
+      modalWhatsappButton.href =
+        `https://wa.me/55${whatsapp}`;
+
+      modalWhatsappButton.style.display =
+        "inline-flex";
+
+    } else {
+
+      modalWhatsappButton.removeAttribute(
+        "href"
+      );
+
+      modalWhatsappButton.style.display =
+        "none";
+
+    }
+
+
+    candidateModal.classList.add(
+      "open"
+    );
+
+  }
+
+
+  // =========================================================
+  // FECHAR MODAL
+  // =========================================================
+
+  function closeCandidateModal() {
+
+    candidateModal.classList.remove(
+      "open"
+    );
+
+    currentCandidateId =
+      null;
+
+  }
+
+
+  closeModal.addEventListener(
+    "click",
+    closeCandidateModal
+  );
+
+
+  candidateModal.addEventListener(
+    "click",
+    event => {
+
+      if (
+        event.target ===
+        candidateModal
+      ) {
+
+        closeCandidateModal();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Escape"
+      ) {
+
+        closeCandidateModal();
+
+      }
+
+    }
+  );
+
+
+  // =========================================================
+  // ALTERAR STATUS PELA FICHA
+  // =========================================================
+
+  modalCandidateStatus.addEventListener(
+    "change",
+    async () => {
+
+      if (
+        !currentCandidateId
+      ) {
+
+        return;
+
+      }
+
+
+      const newStatus =
+        modalCandidateStatus.value;
+
+
+      const {
+        error
+      } = await supabaseClient
+        .from("Candidatos")
+        .update({
+          status: newStatus
+        })
+        .eq(
+          "id",
+          currentCandidateId
+        );
+
+
+      if (error) {
+
+        console.error(
+          "Erro ao atualizar status:",
+          error
+        );
+
+        alert(
+          "Não foi possível atualizar o status."
+        );
+
+        return;
+
+      }
+
+
+      const candidate =
+        allCandidates.find(
+          item =>
+            String(item.id) ===
+            String(currentCandidateId)
+        );
+
+
+      if (candidate) {
+
+        candidate.status =
+          newStatus;
+
+      }
+
+
+      updateStats(
+        allCandidates
+      );
+
+
+      applyFilters();
+
+    }
+  );
+
+
+  // =========================================================
+  // FORMATAR DATA
+  // =========================================================
+
+  function formatDate(
+    dateValue
+  ) {
+
+    if (!dateValue) {
+
+      return "-";
+
+    }
+
+
+    const date =
+      new Date(dateValue);
+
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+
+      return "-";
+
+    }
+
+
+    return date.toLocaleString(
+      "pt-BR",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    );
+
+  }
+
+
+  // =========================================================
+  // PROTEÇÃO CONTRA HTML
+  // =========================================================
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(value)
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+
+  // =========================================================
+  // VERIFICAR SESSÃO
+  // =========================================================
+
+  async function checkSession() {
+
+    const {
+      data,
+      error
+    } = await supabaseClient.auth.getSession();
+
+
+    if (error) {
+
+      console.error(
+        error
+      );
+
+      return;
+
+    }
+
+
+    if (
+      data &&
+      data.session
+    ) {
+
+      await showDashboard();
+
+    } else {
+
+      loginScreen.style.display =
+        "flex";
+
+      dashboard.style.display =
+        "none";
+
+    }
+
+  }
+
+
+  // =========================================================
+  // OBSERVAR ALTERAÇÕES DE AUTENTICAÇÃO
+  // =========================================================
+
+  supabaseClient.auth.onAuthStateChange(
+    async (
+      event,
+      session
+    ) => {
+
+      if (
+        event ===
+        "SIGNED_IN" &&
+        session
+      ) {
+
+        await showDashboard();
+
+      }
+
+
+      if (
+        event ===
+        "SIGNED_OUT"
+      ) {
+
+        loginScreen.style.display =
+          "flex";
+
+        dashboard.style.display =
+          "none";
+
+      }
+
+    }
+  );
+
+
+  // =========================================================
+  // INICIALIZAÇÃO
+  // =========================================================
+
+  checkSession();
+
+</script>
 </body>
 </html>

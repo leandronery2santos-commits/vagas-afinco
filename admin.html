@@ -602,9 +602,14 @@
 
       <h2 id="modalCandidateName">-</h2>
 
-      <span id="modalCandidateStatus" class="status">
-        Novo
-      </span>
+     <select id="modalCandidateStatus" class="status-select">
+    <option value="novo">Novo</option>
+    <option value="em análise">Em análise</option>
+    <option value="entrevista">Entrevista</option>
+    <option value="aprovado">Aprovado</option>
+    <option value="contratado">Contratado</option>
+    <option value="reprovado">Reprovado</option>
+</select>
     </div>
 
     <div
@@ -973,14 +978,16 @@ function formatValue(value) {
   return String(value);
 }
 
+let currentCandidateId = null;
+    
 function openCandidateModal(candidate) {
 
+currentCandidateId = candidate.id;
   modalCandidateName.textContent =
     formatValue(candidate.nome);
 
-  modalCandidateStatus.textContent =
-    formatValue(candidate.status || "Novo");
-
+ modalCandidateStatus.value =
+    (candidate.status || "novo").toLowerCase();
   const phone =
     String(candidate.whatsapp || "").replace(/\D/g, "");
 
@@ -1051,6 +1058,29 @@ closeCandidateModal.addEventListener(
   closeCandidateModalFn
 );
 
+modalCandidateStatus.addEventListener("change", async () => {
+
+  if (!currentCandidateId) return;
+
+  const newStatus = modalCandidateStatus.value;
+
+  const { error } = await supabaseClient
+    .from("Candidatos")
+    .update({
+      status: newStatus
+    })
+    .eq("id", currentCandidateId);
+
+  if (error) {
+    console.error(error);
+    alert("Não foi possível atualizar o status.");
+    return;
+  }
+
+  await loadCandidates();
+
+});
+    
 candidateModal.addEventListener(
   "click",
   event => {

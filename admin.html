@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Painel Administrativo | AFINCO</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f4f4;
+      color: #171717;
+      min-height: 100vh;
+    }
+
+    /* LOGIN */
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #111;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo img {
+      max-width: 180px;
+      max-height: 80px;
+      object-fit: contain;
+    }
+
+    .login-box h1 {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: #777;
+      margin-bottom: 30px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: #ffd800;
+      box-shadow: 0 0 0 3px rgba(255,216,0,.15);
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #ffd800;
+      color: #111;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .login-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .login-button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .login-message {
+      margin-top: 18px;
+      padding: 13px;
+      border-radius: 10px;
+      display: none;
+      font-size: 14px;
+    }
+
+    .login-message.error {
+      display: block;
+      background: #ffe8e8;
+      color: #b00000;
+    }
+
+    /* PAINEL */
+
+    .dashboard {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 74px;
+      background: #111;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .topbar-brand span {
+      color: #ffd800;
+    }
+
+    .logout-button {
+      border: 1px solid #555;
+      background: transparent;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout-button:hover {
+      background: #222;
+    }
+
+    .content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 35px 25px;
+    }
+
+    .page-title {
+      margin-bottom: 25px;
+    }
+
+    .page-title h1 {
+      font-size: 30px;
+      margin-bottom: 5px;
+    }
+
+    .page-title p {
+      color: #777;
+    }
+
+    /* CARDS */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 15px;
+      padding: 24px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.06);
+    }
+
+    .stat-card .label {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card .number {
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .candidates-box {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.06);
+    }
+
+    .box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 15px;
+    }
+
+    .box-header h2 {
+      font-size: 22px;
+    }
+
+    .refresh-button {
+      border: none;
+      background: #ffd800;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    th {
+      text-align: left;
+      padding: 14px;
+      background: #f7f7f7;
+      font-size: 13px;
+      color: #555;
+    }
+
+    td {
+      padding: 16px 14px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: #eee;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: #777;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #777;
+    }
+
+    .error-box {
+      padding: 20px;
+      background: #ffe8e8;
+      color: #a00000;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 900px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 15px;
+      }
+
+      .topbar-brand {
+        font-size: 16px;
+      }
+
+      .content {
+        padding: 25px 15px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .login-box {
+        padding: 28px 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+
+  <section id="loginScreen" class="login-screen">
+
+    <div class="login-box">
+
+      <div class="logo">
+        <img src="logo.png" alt="AFINCO">
+      </div>
+
+      <h1>Painel Administrativo</h1>
+
+      <p class="login-subtitle">
+        Acesso exclusivo à equipe AFINCO
+      </p>
+
+      <form id="loginForm">
+
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input
+            type="email"
+            id="email"
+            required
+            placeholder="Digite seu e-mail"
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">Senha</label>
+          <input
+            type="password"
+            id="password"
+            required
+            placeholder="Digite sua senha"
+          >
+        </div>
+
+        <button
+          type="submit"
+          id="loginButton"
+          class="login-button"
+        >
+          ENTRAR NO PAINEL
+        </button>
+
+        <div id="loginMessage" class="login-message"></div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+
+  <!-- DASHBOARD -->
+
+  <section id="dashboard" class="dashboard">
+
+    <header class="topbar">
+
+      <div class="topbar-brand">
+        AFINCO <span>RECRUTAMENTO</span>
+      </div>
+
+      <button id="logoutButton" class="logout-button">
+        Sair
+      </button>
+
+    </header>
+
+
+    <main class="content">
+
+      <div class="page-title">
+        <h1>Dashboard</h1>
+        <p>Visão geral das candidaturas recebidas.</p>
+      </div>
+
+
+      <div class="stats">
+
+        <div class="stat-card">
+          <div class="label">Total de candidatos</div>
+          <div id="totalCandidates" class="number">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="label">Novos</div>
+          <div id="newCandidates" class="number">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="label">Em análise</div>
+          <div id="analysisCandidates" class="number">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="label">Contratados</div>
+          <div id="hiredCandidates" class="number">0</div>
+        </div>
+
+      </div>
+
+
+      <div class="candidates-box">
+
+        <div class="box-header">
+
+          <h2>Últimos candidatos</h2>
+
+          <button
+            id="refreshButton"
+            class="refresh-button"
+          >
+            Atualizar
+          </button>
+
+        </div>
+
+        <div id="candidatesContainer">
+
+          <div class="loading">
+            Carregando candidatos...
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </section>
+
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://zinuptosnawlpatngaav.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_cm9yih0AqzRv-U1uePYWAw_257kPPx3";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    const loginScreen =
+      document.getElementById("loginScreen");
+
+    const dashboard =
+      document.getElementById("dashboard");
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+    const candidatesContainer =
+      document.getElementById("candidatesContainer");
+
+
+    function showLoginMessage(message) {
+
+      loginMessage.textContent = message;
+      loginMessage.className =
+        "login-message error";
+
+    }
+
+
+    async function login(email, password) {
+
+      loginButton.disabled = true;
+      loginButton.textContent = "ENTRANDO...";
+
+      loginMessage.className = "login-message";
+      loginMessage.textContent = "";
+
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+
+      if (error) {
+
+        showLoginMessage(
+          "E-mail ou senha incorretos."
+        );
+
+        loginButton.disabled = false;
+        loginButton.textContent =
+          "ENTRAR NO PAINEL";
+
+        return;
+
+      }
+
+
+      loginScreen.style.display = "none";
+      dashboard.style.display = "block";
+
+      await loadCandidates();
+
+    }
+
+
+    loginForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+        const email =
+          document.getElementById("email").value.trim();
+
+        const password =
+          document.getElementById("password").value;
+
+        await login(email, password);
+
+      }
+    );
+
+
+    async function loadCandidates() {
+
+      candidatesContainer.innerHTML =
+        '<div class="loading">Carregando candidatos...</div>';
+
+
+      const { data, error } =
+        await supabaseClient
+          .from("Candidatos")
+          .select("*")
+          .order("created_at", {
+            ascending: false
+          });
+
+
+      if (error) {
+
+        console.error(error);
+
+        candidatesContainer.innerHTML = `
+          <div class="error-box">
+            Não foi possível carregar os candidatos.
+            <br><br>
+            Verifique as permissões do Supabase.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      updateStats(data);
+
+      renderCandidates(data);
+
+    }
+
+
+    function updateStats(candidates) {
+
+      document.getElementById(
+        "totalCandidates"
+      ).textContent = candidates.length;
+
+
+      const newCount =
+        candidates.filter(
+          candidate =>
+            !candidate.status ||
+            candidate.status.toLowerCase() === "novo"
+        ).length;
+
+
+      const analysisCount =
+        candidates.filter(
+          candidate =>
+            candidate.status &&
+            candidate.status.toLowerCase() === "em análise"
+        ).length;
+
+
+      const hiredCount =
+        candidates.filter(
+          candidate =>
+            candidate.status &&
+            candidate.status.toLowerCase() === "contratado"
+        ).length;
+
+
+      document.getElementById(
+        "newCandidates"
+      ).textContent = newCount;
+
+
+      document.getElementById(
+        "analysisCandidates"
+      ).textContent = analysisCount;
+
+
+      document.getElementById(
+        "hiredCandidates"
+      ).textContent = hiredCount;
+
+    }
+
+
+    function renderCandidates(candidates) {
+
+      if (!candidates.length) {
+
+        candidatesContainer.innerHTML = `
+          <div class="empty">
+            Nenhum candidato cadastrado ainda.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      let html = `
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Nome</th>
+                <th>WhatsApp</th>
+                <th>E-mail</th>
+                <th>Cidade</th>
+                <th>Idade</th>
+                <th>Status</th>
+                <th>Data</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+      `;
+
+
+      candidates.forEach(candidate => {
+
+        const date =
+          candidate.created_at
+            ? new Date(
+                candidate.created_at
+              ).toLocaleDateString("pt-BR")
+            : "-";
+
+
+        html += `
+          <tr>
+
+            <td>
+              <strong>
+                ${escapeHtml(candidate.nome || "-")}
+              </strong>
+            </td>
+
+            <td>
+              ${escapeHtml(candidate.whatsapp || "-")}
+            </td>
+
+            <td>
+              ${escapeHtml(candidate.email || "-")}
+            </td>
+
+            <td>
+              ${escapeHtml(candidate.cidade || "-")}
+            </td>
+
+            <td>
+              ${escapeHtml(String(candidate.idade || "-"))}
+            </td>
+
+            <td>
+              <span class="status">
+                ${escapeHtml(candidate.status || "Novo")}
+              </span>
+            </td>
+
+            <td>
+              ${date}
+            </td>
+
+          </tr>
+        `;
+
+      });
+
+
+      html += `
+            </tbody>
+
+          </table>
+
+        </div>
+      `;
+
+
+      candidatesContainer.innerHTML = html;
+
+    }
+
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    document
+      .getElementById("refreshButton")
+      .addEventListener(
+        "click",
+        loadCandidates
+      );
+
+
+    document
+      .getElementById("logoutButton")
+      .addEventListener(
+        "click",
+        async function() {
+
+          await supabaseClient.auth.signOut();
+
+          dashboard.style.display = "none";
+          loginScreen.style.display = "flex";
+
+          loginForm.reset();
+
+        }
+      );
+
+
+    async function checkSession() {
+
+      const {
+        data: { session }
+      } = await supabaseClient.auth.getSession();
+
+
+      if (session) {
+
+        loginScreen.style.display = "none";
+        dashboard.style.display = "block";
+
+        await loadCandidates();
+
+      }
+
+    }
+
+
+    checkSession();
+
+  </script>
+
+</body>
+</html>

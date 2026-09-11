@@ -321,6 +321,132 @@
         padding: 28px 22px;
       }
     }
+    /* FICHA DO CANDIDATO */
+
+.candidate-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.candidate-row:hover {
+  background: #fffbe6;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.candidate-modal {
+  position: relative;
+  width: 100%;
+  max-width: 850px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  border: none;
+  background: transparent;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  color: #555;
+}
+
+.modal-header {
+  padding-right: 40px;
+  margin-bottom: 25px;
+}
+
+.modal-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #b08a00;
+  margin-bottom: 6px;
+}
+
+.modal-header h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  color: #171717;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.detail-item {
+  background: #f7f7f7;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.detail-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+.detail-value {
+  font-size: 15px;
+  color: #222;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.modal-actions {
+  margin-top: 25px;
+}
+
+.whatsapp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 20px;
+  border-radius: 10px;
+  background: #25D366;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .candidate-modal {
+    padding: 22px;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-header h2 {
+    font-size: 23px;
+  }
+}
   </style>
 </head>
 
@@ -458,6 +584,49 @@
 
     </main>
 
+    <!-- FICHA DO CANDIDATO -->
+<div id="candidateModal" class="modal-overlay" aria-hidden="true">
+  <div class="candidate-modal">
+
+    <button
+      id="closeCandidateModal"
+      class="close-modal"
+      type="button"
+      aria-label="Fechar"
+    >
+      ×
+    </button>
+
+    <div class="modal-header">
+      <div class="modal-kicker">FICHA DO CANDIDATO</div>
+
+      <h2 id="modalCandidateName">-</h2>
+
+      <span id="modalCandidateStatus" class="status">
+        Novo
+      </span>
+    </div>
+
+    <div
+      class="detail-grid"
+      id="candidateDetails"
+    ></div>
+
+    <div class="modal-actions">
+      <a
+        id="modalWhatsapp"
+        class="whatsapp-button"
+        href="#"
+        target="_blank"
+        rel="noopener"
+      >
+        💬 Conversar no WhatsApp
+      </a>
+    </div>
+
+  </div>
+</div>
+    
   </section>
 
 
@@ -697,7 +866,7 @@
 
 
         html += `
-          <tr>
+      <tr class="candidate-row" data-candidate-id="${candidate.id}">
 
             <td>
               <strong>
@@ -747,6 +916,18 @@
 
 
       candidatesContainer.innerHTML = html;
+      
+      candidatesContainer.querySelectorAll(".candidate-row").forEach(row => {
+  row.addEventListener("click", () => {
+    const candidate = candidates.find(
+      item => String(item.id) === String(row.dataset.candidateId)
+    );
+
+    if (candidate) {
+      openCandidateModal(candidate);
+    }
+  });
+});
 
     }
 
@@ -760,7 +941,133 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 
+    }// FICHA DO CANDIDATO
+
+const candidateModal =
+  document.getElementById("candidateModal");
+
+const candidateDetails =
+  document.getElementById("candidateDetails");
+
+const modalCandidateName =
+  document.getElementById("modalCandidateName");
+
+const modalCandidateStatus =
+  document.getElementById("modalCandidateStatus");
+
+const modalWhatsapp =
+  document.getElementById("modalWhatsapp");
+
+const closeCandidateModal =
+  document.getElementById("closeCandidateModal");
+
+function formatValue(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    String(value).trim() === ""
+  ) {
+    return "-";
+  }
+
+  return String(value);
+}
+
+function openCandidateModal(candidate) {
+
+  modalCandidateName.textContent =
+    formatValue(candidate.nome);
+
+  modalCandidateStatus.textContent =
+    formatValue(candidate.status || "Novo");
+
+  const phone =
+    String(candidate.whatsapp || "").replace(/\D/g, "");
+
+  if (phone) {
+    modalWhatsapp.href =
+      `https://wa.me/55${phone}`;
+
+    modalWhatsapp.style.display =
+      "inline-flex";
+  } else {
+    modalWhatsapp.style.display =
+      "none";
+  }
+
+  const date =
+    candidate.created_at
+      ? new Date(candidate.created_at)
+          .toLocaleString("pt-BR")
+      : "-";
+
+  const details = [
+    ["WhatsApp", candidate.whatsapp],
+    ["E-mail", candidate.email],
+    ["Cidade", candidate.cidade],
+    ["Idade", candidate.idade],
+    ["Está trabalhando?", candidate.trabalhando],
+    ["Experiência", candidate.experiencia],
+    ["Detalhes da experiência", candidate.detalhes_experiencia],
+    ["Disponibilidade", candidate.disponibilidade],
+    ["Motivo para buscar oportunidade", candidate.motivo],
+    ["Consentimento", candidate.consentimento ? "Autorizado" : "-"],
+    ["Data da candidatura", date]
+  ];
+
+  candidateDetails.innerHTML =
+    details.map(([label, value]) => `
+      <div class="detail-item">
+        <div class="detail-label">
+          ${escapeHtml(label)}
+        </div>
+
+        <div class="detail-value">
+          ${escapeHtml(formatValue(value))}
+        </div>
+      </div>
+    `).join("");
+
+  candidateModal.classList.add("open");
+
+  candidateModal.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+}
+
+function closeCandidateModalFn() {
+
+  candidateModal.classList.remove("open");
+
+  candidateModal.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+}
+
+closeCandidateModal.addEventListener(
+  "click",
+  closeCandidateModalFn
+);
+
+candidateModal.addEventListener(
+  "click",
+  event => {
+    if (event.target === candidateModal) {
+      closeCandidateModalFn();
     }
+  }
+);
+
+document.addEventListener(
+  "keydown",
+  event => {
+    if (event.key === "Escape") {
+      closeCandidateModalFn();
+    }
+  }
+);
 
 
     document

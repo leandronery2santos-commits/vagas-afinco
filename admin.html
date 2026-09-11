@@ -872,6 +872,50 @@
     height: 240px;
   }
 
+.charts-period-filter {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 0 0 20px 0;
+}
+
+.charts-period-filter label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+}
+
+.charts-period-filter select {
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #171717;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+}
+
+.charts-period-filter select:focus {
+    border-color: #f5c400;
+    box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+
+    .charts-period-filter {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .charts-period-filter select {
+        width: 100%;
+    }
+
+}
+  
 }
     
   </style>
@@ -1245,6 +1289,40 @@
     Análise visual
   </div>
 
+<!-- FILTRO DE PERÍODO DOS GRÁFICOS -->
+
+<div class="charts-period-filter">
+
+  <label for="chartPeriod">
+    Período dos gráficos
+  </label>
+
+  <select id="chartPeriod">
+
+    <option value="7">
+      Últimos 7 dias
+    </option>
+
+    <option value="30" selected>
+      Últimos 30 dias
+    </option>
+
+    <option value="90">
+      Últimos 90 dias
+    </option>
+
+    <option value="365">
+      Últimos 12 meses
+    </option>
+
+    <option value="all">
+      Todo o período
+    </option>
+
+  </select>
+
+</div>
+  
   <div class="charts-grid">
 
     <!-- GRÁFICO 1 -->
@@ -2219,6 +2297,27 @@ let applicationsChartInstance = null;
 
 function updateCharts(candidates) {
 
+  const chartPeriod = document.getElementById("chartPeriod");
+
+  if (chartPeriod) {
+    const period = chartPeriod.value;
+
+    if (period !== "all") {
+      const days = Number(period);
+      const limitDate = new Date();
+
+      limitDate.setDate(
+        limitDate.getDate() - days
+      );
+
+      candidates = candidates.filter(candidate => {
+        if (!candidate.created_at) return false;
+
+        return new Date(candidate.created_at) >= limitDate;
+      });
+    }
+  }
+  
   // -----------------------------------------
   // CONTAGEM POR STATUS
   // -----------------------------------------
@@ -2464,6 +2563,14 @@ function updateCharts(candidates) {
   }
 } 
 
+const chartPeriod = document.getElementById("chartPeriod");
+
+if (chartPeriod) {
+  chartPeriod.addEventListener("change", () => {
+    updateCharts(allCandidates);
+  });
+}
+    
   // =========================================================
   // FILTROS
   // =========================================================

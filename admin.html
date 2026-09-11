@@ -639,6 +639,153 @@
         font-size: 23px;
       }
     }
+/* =========================================================
+   DASHBOARD PROFISSIONAL
+   ========================================================= */
+
+.professional-dashboard {
+  margin-bottom: 30px;
+}
+
+.dashboard-section-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.funnel-box {
+  background: #111;
+  border-radius: 16px;
+  padding: 25px;
+  color: #fff;
+  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.funnel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.funnel-header h2 {
+  font-size: 20px;
+}
+
+.funnel-header p {
+  color: #999;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.funnel-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.funnel-card {
+  background: #1c1c1c;
+  border: 1px solid #292929;
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.funnel-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 100%;
+  background: #ffd800;
+}
+
+.funnel-card-label {
+  color: #999;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 10px;
+}
+
+.funnel-card-number {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.funnel-card-info {
+  color: #777;
+  font-size: 12px;
+}
+
+.funnel-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffd800;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.conversion-box {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.conversion-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.05);
+}
+
+.conversion-label {
+  color: #777;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.conversion-number {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+@media (max-width: 1000px) {
+
+  .funnel-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .funnel-grid {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .funnel-card {
+    min-width: 190px;
+    flex: 0 0 190px;
+  }
+
+  .conversion-box {
+    grid-template-columns: 1fr;
+  }
+
+}
+    
   </style>
 </head>
 <body>
@@ -808,7 +955,199 @@
         </div>
 
       </section>
+<!-- DASHBOARD PROFISSIONAL -->
 
+<section class="professional-dashboard">
+
+  <div class="dashboard-section-title">
+    Desempenho do processo seletivo
+  </div>
+
+  <div class="funnel-box">
+
+    <div class="funnel-header">
+
+      <div>
+        <h2>Funil de recrutamento</h2>
+
+        <p>
+          Acompanhe a evolução dos candidatos em cada etapa.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="funnel-grid">
+
+      <!-- NOVOS -->
+
+      <div class="funnel-card">
+
+        <div class="funnel-card-label">
+          Novos
+        </div>
+
+        <div
+          class="funnel-card-number"
+          id="funnelNew"
+        >
+          0
+        </div>
+
+        <div class="funnel-card-info">
+          Candidatos recebidos
+        </div>
+
+      </div>
+
+
+      <!-- EM ANÁLISE -->
+
+      <div class="funnel-card">
+
+        <div class="funnel-card-label">
+          Em análise
+        </div>
+
+        <div
+          class="funnel-card-number"
+          id="funnelAnalysis"
+        >
+          0
+        </div>
+
+        <div class="funnel-card-info">
+          Em avaliação
+        </div>
+
+      </div>
+
+
+      <!-- ENTREVISTA -->
+
+      <div class="funnel-card">
+
+        <div class="funnel-card-label">
+          Entrevistas
+        </div>
+
+        <div
+          class="funnel-card-number"
+          id="funnelInterview"
+        >
+          0
+        </div>
+
+        <div class="funnel-card-info">
+          Candidatos entrevistados
+        </div>
+
+      </div>
+
+
+      <!-- APROVADOS -->
+
+      <div class="funnel-card">
+
+        <div class="funnel-card-label">
+          Aprovados
+        </div>
+
+        <div
+          class="funnel-card-number"
+          id="funnelApproved"
+        >
+          0
+        </div>
+
+        <div class="funnel-card-info">
+          Candidatos aprovados
+        </div>
+
+      </div>
+
+
+      <!-- CONTRATADOS -->
+
+      <div class="funnel-card">
+
+        <div class="funnel-card-label">
+          Contratados
+        </div>
+
+        <div
+          class="funnel-card-number"
+          id="funnelHired"
+        >
+          0
+        </div>
+
+        <div class="funnel-card-info">
+          Contratações realizadas
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CONVERSÕES -->
+
+  <div class="conversion-box">
+
+    <div class="conversion-card">
+
+      <div class="conversion-label">
+        Conversão para entrevista
+      </div>
+
+      <div
+        class="conversion-number"
+        id="interviewConversion"
+      >
+        0%
+      </div>
+
+    </div>
+
+
+    <div class="conversion-card">
+
+      <div class="conversion-label">
+        Conversão para aprovação
+      </div>
+
+      <div
+        class="conversion-number"
+        id="approvalConversion"
+      >
+        0%
+      </div>
+
+    </div>
+
+
+    <div class="conversion-card">
+
+      <div class="conversion-label">
+        Conversão para contratação
+      </div>
+
+      <div
+        class="conversion-number"
+        id="hiringConversion"
+      >
+        0%
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
       <!-- CANDIDATOS -->
 

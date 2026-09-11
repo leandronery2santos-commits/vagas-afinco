@@ -233,6 +233,68 @@
     }
 
     .refresh-button {
+      /* FILTROS */
+
+.filters-box {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 18px;
+  background: #f7f7f7;
+  border-radius: 12px;
+}
+
+.filter-input,
+.filter-select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  background: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  border-color: #ffd800;
+  box-shadow: 0 0 0 3px rgba(255,216,0,.15);
+}
+
+.clear-filters-button {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 13px 16px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clear-filters-button:hover {
+  background: #eee;
+}
+
+.results-info {
+  margin-bottom: 15px;
+  color: #777;
+  font-size: 14px;
+}
+
+.candidate-row {
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.candidate-row:hover {
+  background: #fffbea;
+}
+
+@media (max-width: 700px) {
+  .filters-box {
+    grid-template-columns: 1fr;
+  }
+}
       border: none;
       background: #ffd800;
       padding: 10px 15px;
@@ -571,9 +633,44 @@
           </button>
 
         </div>
+<div class="filters-box">
+
+  <input
+    type="text"
+    id="searchCandidates"
+    class="filter-input"
+    placeholder="🔎 Buscar por nome, WhatsApp, e-mail ou cidade..."
+  >
+
+  <select
+    id="statusFilter"
+    class="filter-select"
+  >
+    <option value="">Todos os status</option>
+    <option value="novo">Novo</option>
+    <option value="em análise">Em análise</option>
+    <option value="entrevista">Entrevista</option>
+    <option value="aprovado">Aprovado</option>
+    <option value="contratado">Contratado</option>
+    <option value="reprovado">Reprovado</option>
+  </select>
+
+  <button
+    id="clearFiltersButton"
+    class="clear-filters-button"
+    type="button"
+  >
+    Limpar filtros
+  </button>
+
+</div>
+
+<div id="resultsInfo" class="results-info">
+  Carregando...
+</div>
 
         <div id="candidatesContainer">
-
+          
           <div class="loading">
             Carregando candidatos...
           </div>
@@ -667,6 +764,20 @@
 
     const candidatesContainer =
       document.getElementById("candidatesContainer");
+
+    const searchCandidates =
+  document.getElementById("searchCandidates");
+
+const statusFilter =
+  document.getElementById("statusFilter");
+
+const clearFiltersButton =
+  document.getElementById("clearFiltersButton");
+
+const resultsInfo =
+  document.getElementById("resultsInfo");
+
+let allCandidates = [];
 
 
     function showLoginMessage(message) {
@@ -768,6 +879,10 @@
 
 
       updateStats(data);
+      allCandidates = data;
+
+updateStats(data);
+applyFilters();
 
       renderCandidates(data);
 
@@ -821,8 +936,54 @@
 
     }
 
+ function applyFilters() {
 
+  const search =
+    searchCandidates.value
+      .trim()
+      .toLowerCase();
+
+  const selectedStatus =
+    statusFilter.value
+      .trim()
+      .toLowerCase();
+
+  const filteredCandidates =
+    allCandidates.filter(candidate => {
+
+      const searchableText = [
+        candidate.nome,
+        candidate.whatsapp,
+        candidate.email,
+        candidate.cidade
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      const candidateStatus =
+        (candidate.status || "novo")
+          .trim()
+          .toLowerCase();
+
+      const matchesSearch =
+        !search ||
+        searchableText.includes(search);
+
+      const matchesStatus =
+        !selectedStatus ||
+        candidateStatus === selectedStatus;
+
+      return matchesSearch && matchesStatus;
+    });
+
+  resultsInfo.textContent =
+    `Exibindo ${filteredCandidates.length} de ${allCandidates.length} candidato(s)`;
+
+  renderCandidates(filteredCandidates);
+}
     function renderCandidates(candidates) {
+     
 
       if (!candidates.length) {
 
@@ -871,7 +1032,10 @@
 
 
         html += `
-      <tr class="candidate-row" data-candidate-id="${candidate.id}">
+      <tr
+  class="candidate-row"
+  data-candidate-id="${candidate.id}"
+>
 
             <td>
               <strong>
@@ -921,6 +1085,29 @@
 
 
       candidatesContainer.innerHTML = html;
+candidatesContainer
+  .querySelectorAll(".candidate-row")
+  .forEach(row => {
+
+    row.addEventListener(
+      "click",
+      function() {
+
+        const candidate =
+          allCandidates.find(
+            item =>
+              String(item.id) ===
+              String(row.dataset.candidateId)
+          );
+
+        if (candidate) {
+          openCandidateModal(candidate);
+        }
+
+      }
+    );
+
+  });
       
       candidatesContainer.querySelectorAll(".candidate-row").forEach(row => {
   row.addEventListener("click", () => {
@@ -1124,8 +1311,28 @@ document.addEventListener(
         }
       );
 
+searchCandidates.addEventListener(
+  "input",
+  applyFilters
+);
 
+statusFilter.addEventListener(
+  "change",
+  applyFilters
+);
+
+clearFiltersButton.addEventListener(
+  "click",
+  function() {
+
+    searchCandidates.value = "";
+    statusFilter.value = "";
+
+    applyFilters();
+  }
+);
     async function checkSession() {
+      
 
       const {
         data: { session }

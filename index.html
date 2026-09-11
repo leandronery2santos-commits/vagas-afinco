@@ -407,43 +407,69 @@
       Exemplo:
       const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/SEU_ID/exec";
     */
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpfWZdQBqwHEUDgK__m-t0kI8840UXeSlTBdUdvNKQ-F7zOcS48MfGSDzETCmkK8P7/exec";
+   const SUPABASE_URL = "https://zinuptosnawlpatngaav.supabase.co";
+const SUPABASE_KEY = "sb_publishable_cm9yih0AqzRv-U1uePYWAw_257kPPx3";
 
-    const form = document.getElementById("candidateForm");
-    const button = document.getElementById("submitButton");
-    const message = document.getElementById("formMessage");
+const form = document.getElementById("candidateForm");
+const button = document.getElementById("submitButton");
+const message = document.getElementById("formMessage");
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+document.getElementById("year").textContent = new Date().getFullYear();
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-      if (GOOGLE_SCRIPT_URL.includes("COLE_AQUI")) {
-        showMessage("O formulário está pronto, mas ainda falta conectar a planilha do Google Sheets.", "error");
-        return;
+  button.disabled = true;
+  button.textContent = "ENVIANDO...";
+  showMessage("Enviando seu cadastro...", "loading");
+
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/Candidatos`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(data)
       }
+    );
 
-      button.disabled = true;
-      button.textContent = "ENVIANDO...";
-      showMessage("Enviando seu cadastro...", "loading");
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
 
-      const data = new URLSearchParams();
-      new FormData(form).forEach((value, key) => data.append(key, value));
+    form.reset();
 
-      try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          body: data
-        });
+    showMessage(
+      "✅ Cadastro enviado com sucesso! Obrigado por se candidatar.",
+      "success"
+    );
 
-        form.reset();
-        showMessage("✅ Cadastro enviado com sucesso! Obrigado por se candidatar.", "success");
-        document.getElementById("candidatura").scrollIntoView({ behavior: "smooth", block: "start" });
-      } catch (error) {
-        console.error(error);
-        showMessage("Não foi possível enviar agora. Tente novamente em alguns instantes.", "error");
-      } finally {
+    document
+      .getElementById("candidatura")
+      .scrollIntoView({ behavior: "smooth" });
+
+  } catch (error) {
+    console.error("Erro ao enviar cadastro:", error);
+
+    showMessage(
+      "❌ Não foi possível enviar agora. Tente novamente em alguns instantes.",
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "ENVIAR CANDIDATURA";
+  }
+});
+  } finally {
         button.disabled = false;
         button.textContent = "🚀 ENVIAR MINHA CANDIDATURA";
       }

@@ -595,6 +595,21 @@
       word-break: break-word;
     }
 
+    .candidate-notes { margin-top: 25px; padding: 20px; background: #f7f7f7; border: 1px solid #e8e8e8; border-radius: 14px; }
+    .notes-header h3 { font-size: 18px; margin-bottom: 5px; }
+    .notes-header p { color: #777; font-size: 12px; }
+    .candidate-note-input { width: 100%; min-height: 110px; margin-top: 15px; padding: 13px 14px; border: 1px solid #ddd; border-radius: 10px; resize: vertical; font: inherit; outline: none; background: #fff; }
+    .candidate-note-input:focus { border-color: #ffd800; box-shadow: 0 0 0 3px rgba(255,216,0,.15); }
+    .notes-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .add-note-button { border: none; background: #111; color: #fff; padding: 11px 16px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+    .add-note-button:disabled { opacity: .6; cursor: not-allowed; }
+    .candidate-notes-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .candidate-note-item { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 12px 14px; }
+    .candidate-note-date { color: #999; font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+    .candidate-note-text { color: #222; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+    .notes-loading, .notes-empty, .notes-error { color: #888; font-size: 13px; padding: 10px 0; }
+    .notes-error { color: #a00000; }
+
     .modal-actions {
       margin-top: 25px;
     }
@@ -1415,33 +1430,17 @@
               Todos os status
             </option>
 
-            <option value="novo">
-              Novo
-            </option>
+            <option value="novos">NOVOS</option>
 
-            <option value="em análise">
-              Em análise
-            </option>
+            <option value="filtrando">FILTRANDO</option>
 
-            <option value="entrevista">
-              Entrevista
-            </option>
+            <option value="entrevista_agendada">ENTREVISTA AGENDADA</option>
 
-            <option value="aprovado">
-              Aprovado
-            </option>
+            <option value="entrevista">ENTREVISTA</option>
 
-            <option value="contratado">
-              Contratado
-            </option>
+            <option value="contratado">CONTRATADO</option>
 
-            <option value="reprovado">
-              Reprovado
-            </option>
-
-            <option value="descartado">
-              Descartado
-            </option>
+            <option value="ficou_3_mais">FICOU 3+</option>
 
           </select>
 
@@ -1745,33 +1744,17 @@
             class="status-select"
           >
 
-            <option value="novo">
-              Novo
-            </option>
+            <option value="novos">NOVOS</option>
 
-            <option value="em análise">
-              Em análise
-            </option>
+            <option value="filtrando">FILTRANDO</option>
 
-            <option value="entrevista">
-              Entrevista
-            </option>
+            <option value="entrevista_agendada">ENTREVISTA AGENDADA</option>
 
-            <option value="aprovado">
-              Aprovado
-            </option>
+            <option value="entrevista">ENTREVISTA</option>
 
-            <option value="contratado">
-              Contratado
-            </option>
+            <option value="contratado">CONTRATADO</option>
 
-            <option value="reprovado">
-              Reprovado
-            </option>
-
-            <option value="descartado">
-              Descartado
-            </option>
+            <option value="ficou_3_mais">FICOU 3+</option>
 
           </select>
 
@@ -1779,6 +1762,19 @@
 
       </div>
 
+
+      <!-- HISTÓRICO DE ANOTAÇÕES -->
+      <section class="candidate-notes">
+        <div class="notes-header">
+          <h3>Anotações do candidato</h3>
+          <p>Registre observações e mantenha todo o histórico interno.</p>
+        </div>
+        <textarea id="candidateNoteInput" class="candidate-note-input" placeholder="Digite uma anotação sobre este candidato..."></textarea>
+        <div class="notes-actions">
+          <button id="addCandidateNote" class="add-note-button" type="button">Adicionar anotação</button>
+        </div>
+        <div id="candidateNotesList" class="candidate-notes-list"><div class="notes-loading">Carregando histórico...</div></div>
+      </section>
 
       <!-- AÇÕES -->
 
@@ -1928,6 +1924,10 @@
 
   const modalWhatsappButton =
     document.getElementById("modalWhatsappButton");
+
+  const candidateNoteInput = document.getElementById("candidateNoteInput");
+  const addCandidateNote = document.getElementById("addCandidateNote");
+  const candidateNotesList = document.getElementById("candidateNotesList");
 
 
   // =========================================================
@@ -2151,23 +2151,23 @@ function updateStats(candidates) {
   const total = candidates.length;
 
   const novos = candidates.filter(
-    candidate => candidate.status === "novo"
+    candidate => normalizeStatus(candidate.status) === "novos"
   ).length;
 
   const analise = candidates.filter(
-    candidate => candidate.status === "em análise"
+    candidate => normalizeStatus(candidate.status) === "filtrando"
   ).length;
 
   const entrevistas = candidates.filter(
-    candidate => candidate.status === "entrevista"
+    candidate => normalizeStatus(candidate.status) === "entrevista"
   ).length;
 
   const aprovados = candidates.filter(
-    candidate => candidate.status === "aprovado"
+    candidate => normalizeStatus(candidate.status) === "ficou_3_mais"
   ).length;
 
   const contratados = candidates.filter(
-    candidate => candidate.status === "contratado"
+    candidate => normalizeStatus(candidate.status) === "contratado"
   ).length;
 
 
@@ -2322,16 +2322,12 @@ function updateCharts(candidates) {
   // CONTAGEM POR STATUS
   // -----------------------------------------
 
-  const novos = candidates.filter(c => c.status === "novo").length;
-  const analise = candidates.filter(c => c.status === "em análise").length;
-  const entrevistas = candidates.filter(c => c.status === "entrevista").length;
-  const aprovados = candidates.filter(c => c.status === "aprovado").length;
-  const contratados = candidates.filter(c => c.status === "contratado").length;
-
-  const descartados = candidates.filter(c =>
-    c.status === "descartado" ||
-    c.status === "reprovado"
-  ).length;
+  const novos = candidates.filter(c => normalizeStatus(c.status) === "novos").length;
+  const filtrando = candidates.filter(c => normalizeStatus(c.status) === "filtrando").length;
+  const agendadas = candidates.filter(c => normalizeStatus(c.status) === "entrevista_agendada").length;
+  const entrevistas = candidates.filter(c => normalizeStatus(c.status) === "entrevista").length;
+  const contratados = candidates.filter(c => normalizeStatus(c.status) === "contratado").length;
+  const ficou3Mais = candidates.filter(c => normalizeStatus(c.status) === "ficou_3_mais").length;
 
 
   // -----------------------------------------
@@ -2351,22 +2347,22 @@ function updateCharts(candidates) {
 
       data: {
         labels: [
-          "Novos",
-          "Em análise",
-          "Entrevista",
-          "Aprovados",
-          "Contratados",
-          "Descartados"
+          "NOVOS",
+          "FILTRANDO",
+          "ENTREVISTA AGENDADA",
+          "ENTREVISTA",
+          "CONTRATADO",
+          "FICOU 3+"
         ],
 
         datasets: [{
           data: [
             novos,
-            analise,
+            filtrando,
+            agendadas,
             entrevistas,
-            aprovados,
             contratados,
-            descartados
+            ficou3Mais
           ],
 
           backgroundColor: [
@@ -2415,8 +2411,8 @@ function updateCharts(candidates) {
       data: {
         labels: [
           "Candidatos",
-          "Entrevistas",
-          "Aprovados",
+          "Entrevista agendada",
+          "Entrevista",
           "Contratados"
         ],
 
@@ -2425,8 +2421,8 @@ function updateCharts(candidates) {
 
           data: [
             candidates.length,
+            agendadas,
             entrevistas,
-            aprovados,
             contratados
           ],
 
@@ -2626,7 +2622,7 @@ if (chartPeriod) {
 
           const matchesStatus =
             !selectedStatus ||
-            candidate.status === selectedStatus;
+            normalizeStatus(candidate.status) === selectedStatus;
 
 
           return (
@@ -2700,41 +2696,36 @@ if (chartPeriod) {
 
 
   // =========================================================
+  // NORMALIZAÇÃO DOS STATUS
+  // =========================================================
+
+  function normalizeStatus(status) {
+    const value = String(status || "").trim().toLowerCase();
+    const map = {
+      "novo": "novos", "novos": "novos",
+      "em análise": "filtrando", "filtrando": "filtrando",
+      "entrevista_agendada": "entrevista_agendada",
+      "entrevista agendada": "entrevista_agendada",
+      "entrevista": "entrevista",
+      "contratado": "contratado",
+      "ficou_3_mais": "ficou_3_mais", "ficou 3+": "ficou_3_mais",
+      "aprovado": "ficou_3_mais", "reprovado": "ficou_3_mais", "descartado": "ficou_3_mais"
+    };
+    return map[value] || "novos";
+  }
+
+
+  // =========================================================
   // KANBAN
   // =========================================================
 
   const kanbanColumns = [
-
-    {
-      status: "novo",
-      title: "Novos"
-    },
-
-    {
-      status: "em análise",
-      title: "Em análise"
-    },
-
-    {
-      status: "entrevista",
-      title: "Entrevista"
-    },
-
-    {
-      status: "aprovado",
-      title: "Aprovados"
-    },
-
-    {
-      status: "contratado",
-      title: "Contratados"
-    },
-
-    {
-      status: "descartado",
-      title: "Descartados"
-    }
-
+    { status: "novos", title: "NOVOS" },
+    { status: "filtrando", title: "FILTRANDO" },
+    { status: "entrevista_agendada", title: "ENTREVISTA AGENDADA" },
+    { status: "entrevista", title: "ENTREVISTA" },
+    { status: "contratado", title: "CONTRATADO" },
+    { status: "ficou_3_mais", title: "FICOU 3+" }
   ];
 
 
@@ -2773,24 +2764,7 @@ if (chartPeriod) {
           candidates.filter(
             candidate => {
 
-              let status =
-                candidate.status || "novo";
-
-
-              /*
-               * Status antigo "reprovado"
-               * passa a ser exibido em
-               * Descartados.
-               */
-
-              if (
-                status === "reprovado"
-              ) {
-
-                status =
-                  "descartado";
-
-              }
+              const status = normalizeStatus(candidate.status);
 
 
               return (
@@ -2892,15 +2866,8 @@ if (chartPeriod) {
       "kanban-card";
 
 
-    if (
-      candidate.status === "descartado" ||
-      candidate.status === "reprovado"
-    ) {
-
-      card.classList.add(
-        "kanban-discarded"
-      );
-
+    if (normalizeStatus(candidate.status) === "ficou_3_mais") {
+      card.classList.add("kanban-discarded");
     }
 
 
@@ -3281,19 +3248,7 @@ if (chartPeriod) {
       );
 
 
-    let status =
-      candidate.status ||
-      "novo";
-
-
-    if (
-      status === "reprovado"
-    ) {
-
-      status =
-        "descartado";
-
-    }
+    const status = normalizeStatus(candidate.status);
 
 
     modalCandidateStatus.value =
@@ -3334,6 +3289,71 @@ if (chartPeriod) {
       "open"
     );
 
+    if (candidateNoteInput) candidateNoteInput.value = "";
+    loadCandidateNotes(candidate.id);
+
+  }
+
+
+  // =========================================================
+  // ANOTAÇÕES DO CANDIDATO
+  // =========================================================
+
+  async function loadCandidateNotes(candidateId) {
+    if (!candidateNotesList) return;
+    candidateNotesList.innerHTML = '<div class="notes-loading">Carregando histórico...</div>';
+
+    const { data, error } = await supabaseClient
+      .from("candidato_anotacoes")
+      .select("id, texto, created_at, admin_user_id")
+      .eq("candidato_id", candidateId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Erro ao carregar anotações:", error);
+      candidateNotesList.innerHTML = '<div class="notes-error">Não foi possível carregar o histórico.</div>';
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      candidateNotesList.innerHTML = '<div class="notes-empty">Nenhuma anotação registrada ainda.</div>';
+      return;
+    }
+
+    candidateNotesList.innerHTML = data.map(note => `
+      <article class="candidate-note-item">
+        <div class="candidate-note-date">${formatDate(note.created_at)}</div>
+        <div class="candidate-note-text">${escapeHtml(note.texto)}</div>
+      </article>
+    `).join("");
+  }
+
+  if (addCandidateNote) {
+    addCandidateNote.addEventListener("click", async () => {
+      if (!currentCandidateId) return;
+      const texto = candidateNoteInput.value.trim();
+      if (!texto) {
+        alert("Digite uma anotação antes de salvar.");
+        candidateNoteInput.focus();
+        return;
+      }
+      addCandidateNote.disabled = true;
+      addCandidateNote.textContent = "Salvando...";
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const userId = sessionData?.session?.user?.id || null;
+      const { error } = await supabaseClient
+        .from("candidato_anotacoes")
+        .insert({ candidato_id: currentCandidateId, texto, admin_user_id: userId });
+      if (error) {
+        console.error("Erro ao salvar anotação:", error);
+        alert("Não foi possível salvar a anotação.");
+      } else {
+        candidateNoteInput.value = "";
+        await loadCandidateNotes(currentCandidateId);
+      }
+      addCandidateNote.disabled = false;
+      addCandidateNote.textContent = "Adicionar anotação";
+    });
   }
 
 

@@ -863,6 +863,10 @@
 .site-visits-stat-label { color: #777; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
 .site-visits-stat-number { font-size: 32px; font-weight: 900; color: #171717; }
 .site-visits-stat-info { margin-top: 6px; color: #888; font-size: 12px; }
+.site-visits-stat-trend { margin-top: 8px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+.site-visits-stat-trend.trend-up { color: #16a34a; }
+.site-visits-stat-trend.trend-down { color: #dc2626; }
+.site-visits-stat-trend.trend-flat { color: #888; }
 @media (max-width: 600px) { .site-visits-summary { grid-template-columns: 1fr; } }
 
 /* RESPONSIVO */
@@ -1407,11 +1411,13 @@
       <div class="site-visits-stat-label">Visitas</div>
       <div class="site-visits-stat-number" id="siteVisitsTotal">0</div>
       <div class="site-visits-stat-info">Visualizações da página no período selecionado</div>
+      <div class="site-visits-stat-trend" id="siteVisitsTrend"></div>
     </div>
     <div class="site-visits-stat">
       <div class="site-visits-stat-label">Visitantes</div>
       <div class="site-visits-stat-number" id="siteVisitorsUnique">0</div>
       <div class="site-visits-stat-info">Visitantes únicos estimados</div>
+      <div class="site-visits-stat-trend" id="siteVisitorsTrend"></div>
     </div>
   </div>
   <div class="chart-card chart-full">
@@ -2636,22 +2642,70 @@ async function loadSiteVisits() {
   }
 }
 
+function renderVisitsTrend(elementId, currentValue, previousValue, hasPreviousPeriod) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  if (!hasPreviousPeriod) {
+    el.textContent = "";
+    el.className = "site-visits-stat-trend";
+    return;
+  }
+
+  if (previousValue === 0) {
+    if (currentValue === 0) {
+      el.textContent = "Sem variação vs período anterior";
+      el.className = "site-visits-stat-trend trend-flat";
+    } else {
+      el.textContent = "▲ Novo vs período anterior (0)";
+      el.className = "site-visits-stat-trend trend-up";
+    }
+    return;
+  }
+
+  const change = ((currentValue - previousValue) / previousValue) * 100;
+  const rounded = Math.round(change);
+
+  if (rounded === 0) {
+    el.textContent = "Sem variação vs período anterior";
+    el.className = "site-visits-stat-trend trend-flat";
+  } else if (rounded > 0) {
+    el.textContent = `▲ ${rounded}% vs período anterior`;
+    el.className = "site-visits-stat-trend trend-up";
+  } else {
+    el.textContent = `▼ ${Math.abs(rounded)}% vs período anterior`;
+    el.className = "site-visits-stat-trend trend-down";
+  }
+}
+
 function updateSiteVisits(visits) {
   const totalEl = document.getElementById("siteVisitsTotal");
   const uniqueEl = document.getElementById("siteVisitorsUnique");
-  let filteredVisits = Array.isArray(visits) ? [...visits] : [];
+  const allVisits = Array.isArray(visits) ? [...visits] : [];
   const period = chartPeriod ? chartPeriod.value : "30";
+
+  let filteredVisits = allVisits;
+  let previousVisits = [];
+  const hasPreviousPeriod = period !== "all";
 
   if (period !== "all") {
     const days = Number(period);
-    const limitDate = new Date();
-    limitDate.setDate(limitDate.getDate() - days);
-    filteredVisits = filteredVisits.filter(v => v.visited_at && new Date(v.visited_at) >= limitDate);
+    const currentStart = new Date();
+    currentStart.setDate(currentStart.getDate() - days);
+    const previousStart = new Date();
+    previousStart.setDate(previousStart.getDate() - (days * 2));
+
+    filteredVisits = allVisits.filter(v => v.visited_at && new Date(v.visited_at) >= currentStart);
+    previousVisits = allVisits.filter(v => v.visited_at && new Date(v.visited_at) >= previousStart && new Date(v.visited_at) < currentStart);
   }
 
   if (totalEl) totalEl.textContent = filteredVisits.length;
   const uniqueSessions = new Set(filteredVisits.map(v => v.session_id).filter(Boolean));
   if (uniqueEl) uniqueEl.textContent = uniqueSessions.size;
+
+  const previousUniqueSessions = new Set(previousVisits.map(v => v.session_id).filter(Boolean));
+  renderVisitsTrend("siteVisitsTrend", filteredVisits.length, previousVisits.length, hasPreviousPeriod);
+  renderVisitsTrend("siteVisitorsTrend", uniqueSessions.size, previousUniqueSessions.size, hasPreviousPeriod);
 
   const canvas = document.getElementById("siteVisitsChart");
   if (!canvas || typeof Chart === "undefined") return;

@@ -22,6 +22,39 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Embeds de vídeo do YouTube (formato vertical/Shorts) */
+    .video-embed-frame {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      aspect-ratio: 9 / 16;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+    }
+    .video-embed-frame iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+    .testimonial-video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+    }
+    .testimonial-video iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -77,11 +110,17 @@
         </div>
 
         <div class="video-wrap">
-          <!-- Vídeo principal hospedado no Vercel Blob -->
-          <video controls playsinline preload="metadata" poster="logo.png">
-            <source id="heroVideoSource" src="https://b8cqe8fatxshnodi.public.blob.vercel-storage.com/0907.mp4" type="video/mp4">
-            Seu navegador não conseguiu carregar o vídeo. Tente abrir em outro navegador.
-          </video>
+          <!-- Vídeo principal hospedado no YouTube (Shorts, não listado) -->
+          <div class="video-embed-frame">
+            <iframe
+              id="heroVideoSource"
+              src="https://www.youtube.com/embed/6E0YlAxz3mA"
+              title="Vídeo AFINCO Imóveis"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
           <div class="video-fallback">
             <strong>Vídeo da AFINCO</strong>
             <span>Se o vídeo não carregar, atualize a página ou tente outro navegador.</span>
@@ -100,9 +139,7 @@
         <div class="testimonial-grid" id="testimonialGrid">
           <article class="testimonial-card testimonial-featured">
             <div class="testimonial-video">
-              <video controls playsinline preload="metadata" poster="logo.png">
-                <source src="https://b8cqe8fatxshnodi.public.blob.vercel-storage.com/miguel-depoimento.mp4" type="video/mp4">
-              </video>
+              <iframe src="https://www.youtube.com/embed/g5TzQhYToeA" title="Depoimento Miguel Vaz" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="testimonial-content">
               <span class="testimonial-tag">DEPOIMENTO</span>
@@ -112,7 +149,7 @@
             </div>
           </article>
           <article class="testimonial-card">
-            <div class="testimonial-video"><video controls playsinline preload="metadata" poster="logo.png"><source src="https://b8cqe8fatxshnodi.public.blob.vercel-storage.com/andrielle-depoimento.mp4" type="video/mp4">Seu navegador não conseguiu carregar o vídeo.</video></div>
+            <div class="testimonial-video"><iframe src="https://www.youtube.com/embed/UUw18y6e95w" title="Depoimento Andrielle Monteiro" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
             <div class="testimonial-content">
               <span class="testimonial-tag">DEPOIMENTO</span>
               <h3>Andrielle Monteiro</h3>
@@ -121,7 +158,7 @@
             </div>
           </article>
           <article class="testimonial-card">
-            <div class="testimonial-video"><video controls playsinline preload="metadata" poster="logo.png"><source src="https://b8cqe8fatxshnodi.public.blob.vercel-storage.com/luiz-depoimento.mp4" type="video/mp4">Seu navegador não conseguiu carregar o vídeo.</video></div>
+            <div class="testimonial-video"><iframe src="https://www.youtube.com/embed/vXFRo6dot9s" title="Depoimento Luiz Eduardo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
             <div class="testimonial-content">
               <span class="testimonial-tag">DEPOIMENTO</span>
               <h3>Luiz Eduardo</h3>
@@ -130,7 +167,7 @@
             </div>
           </article>
           <article class="testimonial-card">
-            <div class="testimonial-video"><video controls playsinline preload="metadata" poster="logo.png"><source src="https://b8cqe8fatxshnodi.public.blob.vercel-storage.com/saymon-depoimento.mp4" type="video/mp4">Seu navegador não conseguiu carregar o vídeo.</video></div>
+            <div class="testimonial-video"><iframe src="https://www.youtube.com/embed/n4PbwOrxx8E" title="Depoimento Saymon San" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
             <div class="testimonial-content">
               <span class="testimonial-tag">DEPOIMENTO</span>
               <h3>Saymon San</h3>
@@ -490,14 +527,10 @@ function applySiteContent(content) {
     if (suffixEl) suffixEl.textContent = suffix;
   }
 
-  // Vídeo principal
+  // Vídeo principal (embed do YouTube)
   if (content.hero_video_url) {
-    const videoSource = document.getElementById("heroVideoSource");
-    if (videoSource) {
-      videoSource.src = content.hero_video_url;
-      const videoEl = videoSource.closest("video");
-      if (videoEl) videoEl.load();
-    }
+    const videoFrame = document.getElementById("heroVideoSource");
+    if (videoFrame) videoFrame.src = content.hero_video_url;
   }
 
   // Links de WhatsApp (botão do hero, seção de recrutador e botão flutuante)
@@ -526,10 +559,7 @@ function renderDepoimentos(depoimentos) {
   grid.innerHTML = depoimentos.map((dep, index) => `
     <article class="testimonial-card${index === 0 ? " testimonial-featured" : ""}">
       <div class="testimonial-video">
-        <video controls playsinline preload="metadata" poster="logo.png">
-          <source src="${escapeHtml(dep.video_url || "")}" type="video/mp4">
-          Seu navegador não conseguiu carregar o vídeo.
-        </video>
+        <iframe src="${escapeHtml(dep.video_url || "")}" title="Depoimento ${escapeHtml(dep.nome || "")}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="testimonial-content">
         <span class="testimonial-tag">DEPOIMENTO</span>

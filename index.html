@@ -414,6 +414,26 @@ const form = document.getElementById("candidateForm");
 const button = document.getElementById("submitButton");
 const message = document.getElementById("formMessage");
 
+// =========================================================
+// CONTADOR DE VISITAS DO SITE
+// =========================================================
+(async function registerSiteVisit() {
+  try {
+    let sessionId = localStorage.getItem("afinco_visit_session");
+    if (!sessionId) {
+      sessionId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+      localStorage.setItem("afinco_visit_session", sessionId);
+    }
+    await fetch(`${SUPABASE_URL}/rest/v1/site_visits`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}`, "Prefer": "return=minimal" },
+      body: JSON.stringify({ page: window.location.pathname || "/", session_id: sessionId })
+    });
+  } catch (error) {
+    console.warn("Não foi possível registrar a visita.", error);
+  }
+})();
+
 document.getElementById("year").textContent = new Date().getFullYear();
 
 form.addEventListener("submit", async (event) => {

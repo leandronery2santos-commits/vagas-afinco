@@ -854,6 +854,17 @@
   height: 280px;
 }
 
+/* =========================================================
+   VISITAS DO SITE
+   ========================================================= */
+.site-visits-section { margin: 0 0 30px; }
+.site-visits-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.site-visits-stat { background: #fff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 22px; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+.site-visits-stat-label { color: #777; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
+.site-visits-stat-number { font-size: 32px; font-weight: 900; color: #171717; }
+.site-visits-stat-info { margin-top: 6px; color: #888; font-size: 12px; }
+@media (max-width: 600px) { .site-visits-summary { grid-template-columns: 1fr; } }
+
 /* RESPONSIVO */
 
 @media (max-width: 800px) {
@@ -1386,6 +1397,32 @@
 
   </div>
 
+</section>
+
+<!-- VISITAS DO SITE -->
+<section class="site-visits-section">
+  <div class="dashboard-section-title">Visitas do site</div>
+  <div class="site-visits-summary">
+    <div class="site-visits-stat">
+      <div class="site-visits-stat-label">Visitas</div>
+      <div class="site-visits-stat-number" id="siteVisitsTotal">0</div>
+      <div class="site-visits-stat-info">Visualizações da página no período selecionado</div>
+    </div>
+    <div class="site-visits-stat">
+      <div class="site-visits-stat-label">Visitantes</div>
+      <div class="site-visits-stat-number" id="siteVisitorsUnique">0</div>
+      <div class="site-visits-stat-info">Visitantes únicos estimados</div>
+    </div>
+  </div>
+  <div class="chart-card chart-full">
+    <div class="chart-header">
+      <div>
+        <h3>Visitas ao site ao longo do tempo</h3>
+        <p>Acompanhe o movimento de pessoas chegando à página da vaga.</p>
+      </div>
+    </div>
+    <div class="chart-container chart-time"><canvas id="siteVisitsChart"></canvas></div>
+  </div>
 </section>
 
       
@@ -2076,6 +2113,7 @@
       "Entrar";
 
     await loadCandidates();
+    await loadSiteVisits();
 
   }
 
@@ -2298,6 +2336,8 @@ updateCharts(candidates);
 let statusChartInstance = null;
 let funnelChartInstance = null;
 let applicationsChartInstance = null;
+let siteVisitsChartInstance = null;
+let allSiteVisits = [];
 
 function updateCharts(candidates) {
 
@@ -2569,6 +2609,72 @@ const chartPeriod = document.getElementById("chartPeriod");
 if (chartPeriod) {
   chartPeriod.addEventListener("change", () => {
     updateCharts(allCandidates);
+    updateSiteVisits(allSiteVisits);
+  });
+}
+
+// =========================================================
+// VISITAS DO SITE
+// =========================================================
+
+async function loadSiteVisits() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("site_visits")
+      .select("id, visited_at, session_id")
+      .order("visited_at", { ascending: true });
+
+    if (error) {
+      console.error("Erro ao carregar visitas do site:", error);
+      return;
+    }
+
+    allSiteVisits = data || [];
+    updateSiteVisits(allSiteVisits);
+  } catch (error) {
+    console.error("Erro ao carregar visitas do site:", error);
+  }
+}
+
+function updateSiteVisits(visits) {
+  const totalEl = document.getElementById("siteVisitsTotal");
+  const uniqueEl = document.getElementById("siteVisitorsUnique");
+  let filteredVisits = Array.isArray(visits) ? [...visits] : [];
+  const period = chartPeriod ? chartPeriod.value : "30";
+
+  if (period !== "all") {
+    const days = Number(period);
+    const limitDate = new Date();
+    limitDate.setDate(limitDate.getDate() - days);
+    filteredVisits = filteredVisits.filter(v => v.visited_at && new Date(v.visited_at) >= limitDate);
+  }
+
+  if (totalEl) totalEl.textContent = filteredVisits.length;
+  const uniqueSessions = new Set(filteredVisits.map(v => v.session_id).filter(Boolean));
+  if (uniqueEl) uniqueEl.textContent = uniqueSessions.size;
+
+  const canvas = document.getElementById("siteVisitsChart");
+  if (!canvas || typeof Chart === "undefined") return;
+  if (siteVisitsChartInstance) siteVisitsChartInstance.destroy();
+
+  const dates = {};
+  filteredVisits.forEach(v => {
+    if (!v.visited_at) return;
+    const date = new Date(v.visited_at);
+    const key = date.toLocaleDateString("pt-BR");
+    dates[key] = (dates[key] || 0) + 1;
+  });
+
+  const sortedDates = Object.keys(dates).sort((a, b) => {
+    const [da, ma, ya] = a.split("/").map(Number);
+    const [db, mb, yb] = b.split("/").map(Number);
+    return new Date(ya, ma - 1, da) - new Date(yb, mb - 1, db);
+  });
+
+  siteVisitsChartInstance = new Chart(canvas, {
+    type: "line",
+    data: { labels: sortedDates, datasets: [{ label: "Visitas", data: sortedDates.map(date => dates[date]), borderColor: "#ffd800", backgroundColor: "rgba(255,216,0,0.15)", fill: true, tension: 0.35, pointRadius: 4, pointBackgroundColor: "#111111" }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
   });
 }
     

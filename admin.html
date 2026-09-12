@@ -379,7 +379,7 @@
 
     .kanban-board {
       display: grid;
-      grid-template-columns: repeat(6, minmax(230px, 1fr));
+      grid-template-columns: repeat(7, minmax(230px, 1fr));
       gap: 14px;
       overflow-x: auto;
       padding-bottom: 8px;
@@ -488,13 +488,13 @@
 
     @media(max-width:900px) {
       .kanban-board {
-        grid-template-columns: repeat(6,minmax(230px,1fr));
+        grid-template-columns: repeat(7,minmax(230px,1fr));
       }
     }
 
     @media(max-width:600px) {
       .kanban-board {
-        grid-template-columns: repeat(6,minmax(210px,1fr));
+        grid-template-columns: repeat(7,minmax(210px,1fr));
       }
     }
 
@@ -1442,6 +1442,8 @@
 
             <option value="ficou_3_mais">FICOU 3+</option>
 
+            <option value="descartado">DESCARTADOS</option>
+
           </select>
 
 
@@ -1755,6 +1757,8 @@
             <option value="contratado">CONTRATADO</option>
 
             <option value="ficou_3_mais">FICOU 3+</option>
+
+            <option value="descartado">DESCARTADOS</option>
 
           </select>
 
@@ -2709,7 +2713,10 @@ if (chartPeriod) {
       "entrevista": "entrevista",
       "contratado": "contratado",
       "ficou_3_mais": "ficou_3_mais", "ficou 3+": "ficou_3_mais",
-      "aprovado": "ficou_3_mais", "reprovado": "ficou_3_mais", "descartado": "ficou_3_mais"
+      "aprovado": "ficou_3_mais",
+      "reprovado": "descartado",
+      "descartado": "descartado",
+      "descartados": "descartado"
     };
     return map[value] || "novos";
   }
@@ -2725,7 +2732,8 @@ if (chartPeriod) {
     { status: "entrevista_agendada", title: "ENTREVISTA AGENDADA" },
     { status: "entrevista", title: "ENTREVISTA" },
     { status: "contratado", title: "CONTRATADO" },
-    { status: "ficou_3_mais", title: "FICOU 3+" }
+    { status: "ficou_3_mais", title: "FICOU 3+" },
+    { status: "descartado", title: "DESCARTADOS" }
   ];
 
 
@@ -2866,7 +2874,7 @@ if (chartPeriod) {
       "kanban-card";
 
 
-    if (normalizeStatus(candidate.status) === "ficou_3_mais") {
+    if (normalizeStatus(candidate.status) === "descartado") {
       card.classList.add("kanban-discarded");
     }
 

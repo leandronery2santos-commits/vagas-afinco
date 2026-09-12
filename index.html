@@ -37,30 +37,30 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <span class="eyebrow">🚨 OPORTUNIDADE DE TRABALHO</span>
-          <h1>Comece uma nova fase da sua <span>carreira.</span></h1>
-          <p class="hero-text">
+          <h1 id="heroTitleText">Comece uma nova fase da sua <span>carreira.</span></h1>
+          <p class="hero-text" id="heroSubtitle">
             Estamos selecionando pessoas para atuar na <strong>prospecção e triagem de clientes</strong> da imobiliária, de forma online ou presencial, sem atuação na negociação.
           </p>
 
           <div class="hero-badge">🤝 CONTRATAÇÃO EXCLUSIVA NO MODELO PJ</div>
 
           <div class="hero-points">
-            <div><span>✓</span><strong>Não precisa ter experiência</strong></div>
-            <div><span>✓</span><strong>Treinamento do zero</strong></div>
-            <div><span>✓</span><strong>Possíveis ganhos a partir de R$ 4.000</strong></div>
-            <div><span>✓</span><strong>Contratação exclusiva no modelo PJ</strong></div>
+            <div><span>✓</span><strong id="badgeExperiencia">Não precisa ter experiência</strong></div>
+            <div><span>✓</span><strong id="badgeTreinamento">Treinamento do zero</strong></div>
+            <div><span>✓</span><strong id="badgeGanhos">Possíveis ganhos a partir de R$ 4.000</strong></div>
+            <div><span>✓</span><strong id="badgeContratacao">Contratação exclusiva no modelo PJ</strong></div>
           </div>
 
-          <div class="hero-actions"><a href="#candidatura" class="btn btn-primary">🚀 QUERO ME CANDIDATAR</a><a href="https://wa.me/5541920056312?text=Ol%C3%A1!%20Vi%20a%20oportunidade%20de%20trabalho%20da%20AFINCO%20e%20gostaria%20de%20falar%20com%20um%20recrutador%20sobre%20a%20vaga." target="_blank" rel="noopener" class="btn btn-secondary">💬 Quero falar com um recrutador</a></div>
+          <div class="hero-actions"><a href="#candidatura" class="btn btn-primary">🚀 QUERO ME CANDIDATAR</a><a href="https://wa.me/5541920056312?text=Ol%C3%A1!%20Vi%20a%20oportunidade%20de%20trabalho%20da%20AFINCO%20e%20gostaria%20de%20falar%20com%20um%20recrutador%20sobre%20a%20vaga." target="_blank" rel="noopener" class="btn btn-secondary whatsapp-link-dynamic">💬 Quero falar com um recrutador</a></div>
           <p class="microcopy">Processo seletivo • Atuação online ou presencial • Curitiba/PR</p>
         </div>
 
         <div class="hero-card">
           <div class="card-label">AFINCO IMÓVEIS</div>
-          <div class="money">R$ 4.000<span>+</span></div>
+          <div class="money" id="heroMoney">R$ 4.000<span id="heroMoneySuffix">+</span></div>
           <div class="money-caption">possíveis ganhos a partir de</div>
           <div class="divider"></div>
-          <div class="hero-card-row"><span>📍 Local</span><strong>São Francisco • Curitiba/PR</strong></div>
+          <div class="hero-card-row"><span>📍 Local</span><strong id="heroCardLocal">São Francisco • Curitiba/PR</strong></div>
           <div class="hero-card-row"><span>🎓 Experiência</span><strong>Não é necessária</strong></div>
           <div class="hero-card-row"><span>📈 Desenvolvimento</span><strong>Treinamento do zero</strong></div>
           <div class="hero-card-row"><span>📄 Contratação</span><strong>Modelo PJ</strong></div>
@@ -79,7 +79,7 @@
         <div class="video-wrap">
           <!-- Vídeo principal hospedado no Vercel Blob -->
           <video controls playsinline preload="metadata" poster="logo.png">
-            <source src="https://b8cqe8fatxshnodi.public.blob.vercel-storage.com/0907.mp4" type="video/mp4">
+            <source id="heroVideoSource" src="https://b8cqe8fatxshnodi.public.blob.vercel-storage.com/0907.mp4" type="video/mp4">
             Seu navegador não conseguiu carregar o vídeo. Tente abrir em outro navegador.
           </video>
           <div class="video-fallback">
@@ -97,7 +97,7 @@
           <h2>Conheça a experiência de quem já está com a gente.</h2>
           <p>Depoimentos reais de pessoas que vivem essa oportunidade no dia a dia.</p>
         </div>
-        <div class="testimonial-grid">
+        <div class="testimonial-grid" id="testimonialGrid">
           <article class="testimonial-card testimonial-featured">
             <div class="testimonial-video">
               <video controls playsinline preload="metadata" poster="logo.png">
@@ -147,7 +147,7 @@
         <div class="section-heading">
           <span class="section-kicker">💼 SOBRE A VAGA</span>
           <h2>Uma oportunidade para começar ou mudar de carreira.</h2>
-          <p>
+          <p id="jobDescription">
             A vaga é para atuação na prospecção e triagem de clientes da imobiliária, relacionada ao atendimento de interessados no Programa Minha Casa Minha Vida. A atuação pode ser online ou presencial, sem responsabilidade pela negociação, e conta com treinamento para quem está começando.
           </p>
 
@@ -218,7 +218,7 @@
           <p>Confira algumas das nossas unidades e veja onde a AFINCO está presente.</p>
         </div>
 
-        <div class="units-grid">
+        <div class="units-grid" id="unitsGrid">
           <article class="unit-card">
             <div class="unit-photo-wrap">
               <img src="unidade-curitiba-inacio-lustosa.jpg" alt="Fachada da unidade AFINCO Imóveis na Rua Inácio Lustosa, Curitiba" loading="lazy">
@@ -285,7 +285,7 @@
           <h2>Quer entender melhor a oportunidade?</h2>
           <p>Se preferir, você também pode falar diretamente com nosso time de recrutamento.</p>
         </div>
-        <a href="https://wa.me/5541920056312?text=Ol%C3%A1!%20Vi%20a%20oportunidade%20de%20trabalho%20da%20AFINCO%20e%20gostaria%20de%20falar%20com%20um%20recrutador%20sobre%20a%20vaga." target="_blank" rel="noopener" class="btn btn-primary">💬 Quero falar com um recrutador</a>
+        <a href="https://wa.me/5541920056312?text=Ol%C3%A1!%20Vi%20a%20oportunidade%20de%20trabalho%20da%20AFINCO%20e%20gostaria%20de%20falar%20com%20um%20recrutador%20sobre%20a%20vaga." target="_blank" rel="noopener" class="btn btn-primary whatsapp-link-dynamic">💬 Quero falar com um recrutador</a>
       </div>
     </section>
 
@@ -391,7 +391,7 @@
         <a href="#candidatura" class="btn btn-primary">QUERO ME CANDIDATAR</a>
       </div>
     </section>
-  <a class="floating-whatsapp" href="https://wa.me/5541920056312?text=Ol%C3%A1!%20Vi%20a%20oportunidade%20de%20trabalho%20da%20AFINCO%20e%20gostaria%20de%20falar%20com%20um%20recrutador%20sobre%20a%20vaga." target="_blank" rel="noopener" aria-label="Falar com um recrutador pelo WhatsApp">💬 <span>Falar com um recrutador</span></a>
+  <a class="floating-whatsapp whatsapp-link-dynamic" href="https://wa.me/5541920056312?text=Ol%C3%A1!%20Vi%20a%20oportunidade%20de%20trabalho%20da%20AFINCO%20e%20gostaria%20de%20falar%20com%20um%20recrutador%20sobre%20a%20vaga." target="_blank" rel="noopener" aria-label="Falar com um recrutador pelo WhatsApp">💬 <span>Falar com um recrutador</span></a>
   </main>
 
   <footer>
@@ -435,6 +435,153 @@ const message = document.getElementById("formMessage");
 })();
 
 document.getElementById("year").textContent = new Date().getFullYear();
+
+// =========================================================
+// CONTEÚDO DINÂMICO DO SITE (textos, depoimentos, unidades)
+// =========================================================
+
+function escapeHtml(str) {
+  return String(str == null ? "" : str).replace(/[&<>"']/g, (s) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[s]));
+}
+
+async function fetchFromSupabase(path) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+  });
+  if (!res.ok) throw new Error(`Falha ao buscar ${path}: ${res.status}`);
+  return res.json();
+}
+
+function applySiteContent(content) {
+  const setText = (id, key) => {
+    const el = document.getElementById(id);
+    if (el && content[key]) el.textContent = content[key];
+  };
+
+  // Título (mantém o último termo destacado em amarelo, como no design original)
+  const heroTitleEl = document.getElementById("heroTitleText");
+  if (heroTitleEl && content.hero_titulo) {
+    const words = content.hero_titulo.trim().split(" ");
+    const last = words.pop();
+    heroTitleEl.innerHTML = `${escapeHtml(words.join(" "))} <span>${escapeHtml(last)}</span>`;
+  }
+
+  setText("heroSubtitle", "hero_subtitulo");
+  setText("badgeExperiencia", "badge_experiencia");
+  setText("badgeTreinamento", "badge_treinamento");
+  setText("badgeGanhos", "badge_ganhos");
+  setText("badgeContratacao", "badge_contratacao");
+  setText("heroCardLocal", "vaga_local");
+  setText("jobDescription", "vaga_descricao");
+
+  // Valor de ganhos (mantém o "+" destacado separadamente, como no design original)
+  if (content.vaga_ganhos_valor) {
+    let value = content.vaga_ganhos_valor.trim();
+    let suffix = "";
+    if (value.endsWith("+")) {
+      suffix = "+";
+      value = value.slice(0, -1);
+    }
+    const moneyEl = document.getElementById("heroMoney");
+    const suffixEl = document.getElementById("heroMoneySuffix");
+    if (moneyEl) moneyEl.childNodes[0].nodeValue = value;
+    if (suffixEl) suffixEl.textContent = suffix;
+  }
+
+  // Vídeo principal
+  if (content.hero_video_url) {
+    const videoSource = document.getElementById("heroVideoSource");
+    if (videoSource) {
+      videoSource.src = content.hero_video_url;
+      const videoEl = videoSource.closest("video");
+      if (videoEl) videoEl.load();
+    }
+  }
+
+  // Links de WhatsApp (botão do hero, seção de recrutador e botão flutuante)
+  if (content.whatsapp_numero) {
+    const mensagem = content.whatsapp_mensagem || "";
+    const link = `https://wa.me/${content.whatsapp_numero}?text=${encodeURIComponent(mensagem)}`;
+    document.querySelectorAll(".whatsapp-link-dynamic").forEach((el) => { el.href = link; });
+  }
+}
+
+async function loadSiteContent() {
+  try {
+    const data = await fetchFromSupabase("site_content?select=content_key,content_value");
+    const content = {};
+    (data || []).forEach((item) => { content[item.content_key] = item.content_value; });
+    applySiteContent(content);
+  } catch (error) {
+    console.warn("Não foi possível carregar textos dinâmicos, mantendo o conteúdo padrão.", error);
+  }
+}
+
+function renderDepoimentos(depoimentos) {
+  const grid = document.getElementById("testimonialGrid");
+  if (!grid || !depoimentos.length) return;
+
+  grid.innerHTML = depoimentos.map((dep, index) => `
+    <article class="testimonial-card${index === 0 ? " testimonial-featured" : ""}">
+      <div class="testimonial-video">
+        <video controls playsinline preload="metadata" poster="logo.png">
+          <source src="${escapeHtml(dep.video_url || "")}" type="video/mp4">
+          Seu navegador não conseguiu carregar o vídeo.
+        </video>
+      </div>
+      <div class="testimonial-content">
+        <span class="testimonial-tag">DEPOIMENTO</span>
+        <h3>${escapeHtml(dep.nome)}</h3>
+        <p>${escapeHtml(dep.cargo || "")}</p>
+        <blockquote>"${escapeHtml(dep.citacao || "")}"</blockquote>
+      </div>
+    </article>
+  `).join("");
+}
+
+async function loadDepoimentos() {
+  try {
+    const data = await fetchFromSupabase("depoimentos?select=*&ativo=eq.true&order=ordem.asc");
+    if (Array.isArray(data) && data.length) renderDepoimentos(data);
+  } catch (error) {
+    console.warn("Não foi possível carregar depoimentos dinâmicos, mantendo o conteúdo padrão.", error);
+  }
+}
+
+function renderUnidades(unidades) {
+  const grid = document.getElementById("unitsGrid");
+  if (!grid || !unidades.length) return;
+
+  grid.innerHTML = unidades.map((un, index) => `
+    <article class="unit-card${index === 1 ? " featured" : ""}">
+      <div class="unit-photo-wrap">
+        <img src="${escapeHtml(un.imagem_url || "logo.png")}" alt="Fachada da unidade AFINCO Imóveis - ${escapeHtml(un.nome_unidade)}" loading="lazy">
+        <span class="unit-city">${escapeHtml((un.cidade || "").toUpperCase())} • ${escapeHtml(un.uf || "")}</span>
+      </div>
+      <div class="unit-content">
+        <span class="unit-label">${escapeHtml((un.nome_unidade || "").toUpperCase())}</span>
+        <h3>${escapeHtml(un.endereco || "")}</h3>
+        <p>${escapeHtml(un.cidade || "")} - ${escapeHtml(un.uf || "")}${un.cep ? `<br>${escapeHtml(un.cep)}` : ""}</p>
+        <a class="map-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(un.maps_query || un.endereco || "")}">📍 Ver localização</a>
+      </div>
+    </article>
+  `).join("");
+}
+
+async function loadUnidades() {
+  try {
+    const data = await fetchFromSupabase("unidades?select=*&ativo=eq.true&order=ordem.asc");
+    if (Array.isArray(data) && data.length) renderUnidades(data);
+  } catch (error) {
+    console.warn("Não foi possível carregar unidades dinâmicas, mantendo o conteúdo padrão.", error);
+  }
+}
+
+loadSiteContent();
+loadDepoimentos();
+loadUnidades();
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();

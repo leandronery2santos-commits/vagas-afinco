@@ -869,6 +869,36 @@
 .site-visits-stat-trend.trend-flat { color: #888; }
 @media (max-width: 600px) { .site-visits-summary { grid-template-columns: 1fr; } }
 
+/* GERENCIAR CONTEÚDO DO SITE */
+.content-manager-section { margin: 0 0 30px; }
+.content-panel-hint { color: #777; font-size: 13px; margin: 0 0 16px; }
+.content-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.content-tab-btn { border: 1px solid #e2e2e2; background: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; color: #555; }
+.content-tab-btn.active { background: #111; color: #fff; border-color: #111; }
+.content-tab-panel { display: none; }
+.content-tab-panel.active { display: block; }
+.content-panel-actions { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+.content-save-status { font-size: 12px; font-weight: 700; color: #16a34a; }
+.content-form-groups { display: flex; flex-direction: column; gap: 22px; }
+.content-form-group { background: #fff; border: 1px solid #e8e8e8; border-radius: 14px; padding: 18px; }
+.content-form-group h4 { margin: 0 0 12px; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: #999; }
+.content-field { margin-bottom: 14px; }
+.content-field label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 6px; }
+.content-field input, .content-field textarea { width: 100%; padding: 11px 12px; border: 1px solid #ddd; border-radius: 9px; font: inherit; outline: none; background: #fff; }
+.content-field input:focus, .content-field textarea:focus { border-color: #ffd800; box-shadow: 0 0 0 3px rgba(255,216,0,.15); }
+.content-item-list { display: flex; flex-direction: column; gap: 12px; }
+.content-item-card { background: #fff; border: 1px solid #e8e8e8; border-radius: 14px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.content-item-card.inactive { opacity: .55; }
+.content-item-main { flex: 1; min-width: 200px; }
+.content-item-title { font-weight: 800; color: #171717; }
+.content-item-sub { font-size: 12px; color: #888; margin-top: 2px; }
+.content-item-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.content-icon-btn { border: 1px solid #ddd; background: #fff; border-radius: 8px; width: 32px; height: 32px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; }
+.content-icon-btn:hover { background: #f5f5f5; }
+.content-icon-btn.danger:hover { background: #fee2e2; border-color: #fca5a5; }
+.content-toggle-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #555; margin: 4px 0 6px; cursor: pointer; }
+.content-modal { max-width: 560px; }
+
 /* RESPONSIVO */
 
 @media (max-width: 800px) {
@@ -1431,8 +1461,124 @@
   </div>
 </section>
 
+<!-- CONTEÚDO DO SITE -->
+<section class="content-manager-section">
+  <div class="dashboard-section-title">Gerenciar conteúdo do site</div>
+
+  <div class="content-tabs">
+    <button type="button" class="content-tab-btn active" data-tab="textos">✏️ Textos</button>
+    <button type="button" class="content-tab-btn" data-tab="depoimentos">⭐ Depoimentos</button>
+    <button type="button" class="content-tab-btn" data-tab="unidades">📍 Unidades</button>
+  </div>
+
+  <!-- TEXTOS -->
+  <div class="content-tab-panel active" id="contentPanel-textos">
+    <p class="content-panel-hint">Edite os textos e links principais do site. Clique em "Salvar alterações" no final para publicar.</p>
+    <div id="siteContentForm" class="content-form-groups"><div class="notes-loading">Carregando textos...</div></div>
+    <div class="content-panel-actions">
+      <button type="button" id="saveSiteContentBtn" class="add-note-button">Salvar alterações</button>
+      <span id="siteContentSaveStatus" class="content-save-status"></span>
+    </div>
+  </div>
+
+  <!-- DEPOIMENTOS -->
+  <div class="content-tab-panel" id="contentPanel-depoimentos">
+    <p class="content-panel-hint">Gerencie os depoimentos em vídeo exibidos no site.</p>
+    <div class="content-panel-actions">
+      <button type="button" id="addDepoimentoBtn" class="add-note-button">➕ Adicionar depoimento</button>
+    </div>
+    <div id="depoimentosList" class="content-item-list"><div class="notes-loading">Carregando depoimentos...</div></div>
+  </div>
+
+  <!-- UNIDADES -->
+  <div class="content-tab-panel" id="contentPanel-unidades">
+    <p class="content-panel-hint">Gerencie as unidades exibidas na seção "Conheça nossas unidades".</p>
+    <div class="content-panel-actions">
+      <button type="button" id="addUnidadeBtn" class="add-note-button">➕ Adicionar unidade</button>
+    </div>
+    <div id="unidadesList" class="content-item-list"><div class="notes-loading">Carregando unidades...</div></div>
+  </div>
+</section>
+
+<!-- MODAL DEPOIMENTO -->
+<div class="modal-overlay" id="depoimentoModalOverlay">
+  <div class="candidate-modal content-modal">
+    <button type="button" class="close-modal" id="closeDepoimentoModal">&times;</button>
+    <div class="modal-header">
+      <div class="modal-kicker">DEPOIMENTO</div>
+      <h2 id="depoimentoModalTitle">Novo depoimento</h2>
+    </div>
+    <input type="hidden" id="depoimentoId">
+    <div class="content-field">
+      <label>Nome</label>
+      <input type="text" id="depoimentoNome" placeholder="Nome do colaborador">
+    </div>
+    <div class="content-field">
+      <label>Cargo</label>
+      <input type="text" id="depoimentoCargo" placeholder="Ex: Setor de Cadastros">
+    </div>
+    <div class="content-field">
+      <label>URL do vídeo</label>
+      <input type="text" id="depoimentoVideoUrl" placeholder="https://...">
+    </div>
+    <div class="content-field">
+      <label>Citação</label>
+      <textarea id="depoimentoCitacao" class="candidate-note-input" placeholder="Frase de destaque do depoimento"></textarea>
+    </div>
+    <label class="content-toggle-label">
+      <input type="checkbox" id="depoimentoAtivo" checked> Exibir no site
+    </label>
+    <div class="modal-actions">
+      <button type="button" id="saveDepoimentoBtn" class="add-note-button">Salvar depoimento</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL UNIDADE -->
+<div class="modal-overlay" id="unidadeModalOverlay">
+  <div class="candidate-modal content-modal">
+    <button type="button" class="close-modal" id="closeUnidadeModal">&times;</button>
+    <div class="modal-header">
+      <div class="modal-kicker">UNIDADE</div>
+      <h2 id="unidadeModalTitle">Nova unidade</h2>
+    </div>
+    <input type="hidden" id="unidadeId">
+    <div class="content-field">
+      <label>Nome da unidade</label>
+      <input type="text" id="unidadeNome" placeholder="Ex: Unidade São Francisco">
+    </div>
+    <div class="content-field">
+      <label>Cidade</label>
+      <input type="text" id="unidadeCidade" placeholder="Ex: Curitiba">
+    </div>
+    <div class="content-field">
+      <label>UF</label>
+      <input type="text" id="unidadeUf" placeholder="Ex: PR" maxlength="2">
+    </div>
+    <div class="content-field">
+      <label>Endereço</label>
+      <input type="text" id="unidadeEndereco" placeholder="Rua, número - bairro">
+    </div>
+    <div class="content-field">
+      <label>CEP</label>
+      <input type="text" id="unidadeCep" placeholder="00000-000">
+    </div>
+    <div class="content-field">
+      <label>URL da imagem</label>
+      <input type="text" id="unidadeImagemUrl" placeholder="https://...">
+    </div>
+    <label class="content-toggle-label">
+      <input type="checkbox" id="unidadeAtivo" checked> Exibir no site
+    </label>
+    <div class="modal-actions">
+      <button type="button" id="saveUnidadeBtn" class="add-note-button">Salvar unidade</button>
+    </div>
+  </div>
+</div>
+
       
       <!-- CANDIDATOS -->
+
 
       <section class="candidates-box">
 
@@ -2120,6 +2266,9 @@
 
     await loadCandidates();
     await loadSiteVisits();
+    await loadSiteContent();
+    await loadDepoimentos();
+    await loadUnidades();
 
   }
 
@@ -2731,12 +2880,418 @@ function updateSiteVisits(visits) {
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
   });
 }
+
+// =========================================================
+// GERENCIAR CONTEÚDO DO SITE
+// =========================================================
+
+const CONTENT_GROUP_LABELS = {
+  hero: "Seção principal (hero)",
+  badges: "Selos de destaque",
+  vaga: "Detalhes da vaga",
+  contato: "Contato / WhatsApp",
+  geral: "Geral"
+};
+
+document.querySelectorAll(".content-tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".content-tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".content-tab-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    const panel = document.getElementById(`contentPanel-${btn.dataset.tab}`);
+    if (panel) panel.classList.add("active");
+  });
+});
+
+// --- TEXTOS ---
+
+async function loadSiteContent() {
+  const container = document.getElementById("siteContentForm");
+  try {
+    const { data, error } = await supabaseClient
+      .from("site_content")
+      .select("id, content_key, content_value, content_group, label")
+      .order("content_group", { ascending: true })
+      .order("id", { ascending: true });
+
+    if (error) throw error;
+
+    const groups = {};
+    (data || []).forEach(item => {
+      if (!groups[item.content_group]) groups[item.content_group] = [];
+      groups[item.content_group].push(item);
+    });
+
+    container.innerHTML = "";
+    Object.keys(groups).forEach(groupKey => {
+      const groupEl = document.createElement("div");
+      groupEl.className = "content-form-group";
+      const groupTitle = CONTENT_GROUP_LABELS[groupKey] || groupKey;
+      groupEl.innerHTML = `<h4>${groupTitle}</h4>`;
+
+      groups[groupKey].forEach(item => {
+        const field = document.createElement("div");
+        field.className = "content-field";
+        const isLong = (item.content_value || "").length > 80;
+        field.innerHTML = `
+          <label>${item.label || item.content_key}</label>
+          ${isLong
+            ? `<textarea class="candidate-note-input" data-content-key="${item.content_key}">${item.content_value || ""}</textarea>`
+            : `<input type="text" data-content-key="${item.content_key}" value="${(item.content_value || "").replace(/"/g, "&quot;")}">`
+          }
+        `;
+        groupEl.appendChild(field);
+      });
+
+      container.appendChild(groupEl);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar conteúdo do site:", error);
+    container.innerHTML = '<div class="notes-error">Não foi possível carregar os textos do site.</div>';
+  }
+}
+
+const saveSiteContentBtn = document.getElementById("saveSiteContentBtn");
+if (saveSiteContentBtn) {
+  saveSiteContentBtn.addEventListener("click", async () => {
+    const statusEl = document.getElementById("siteContentSaveStatus");
+    const inputs = document.querySelectorAll("[data-content-key]");
+    saveSiteContentBtn.disabled = true;
+    saveSiteContentBtn.textContent = "Salvando...";
+
+    try {
+      const updates = Array.from(inputs).map(input =>
+        supabaseClient
+          .from("site_content")
+          .update({ content_value: input.value, updated_at: new Date().toISOString() })
+          .eq("content_key", input.dataset.contentKey)
+      );
+      const results = await Promise.all(updates);
+      const failed = results.find(r => r.error);
+      if (failed) throw failed.error;
+
+      if (statusEl) {
+        statusEl.textContent = "✓ Salvo com sucesso";
+        setTimeout(() => { statusEl.textContent = ""; }, 3000);
+      }
+    } catch (error) {
+      console.error("Erro ao salvar textos do site:", error);
+      alert("Não foi possível salvar as alterações. Tente novamente.");
+    } finally {
+      saveSiteContentBtn.disabled = false;
+      saveSiteContentBtn.textContent = "Salvar alterações";
+    }
+  });
+}
+
+// --- DEPOIMENTOS ---
+
+let allDepoimentos = [];
+
+async function loadDepoimentos() {
+  const list = document.getElementById("depoimentosList");
+  try {
+    const { data, error } = await supabaseClient
+      .from("depoimentos")
+      .select("*")
+      .order("ordem", { ascending: true });
+
+    if (error) throw error;
+    allDepoimentos = data || [];
+    renderDepoimentos();
+  } catch (error) {
+    console.error("Erro ao carregar depoimentos:", error);
+    list.innerHTML = '<div class="notes-error">Não foi possível carregar os depoimentos.</div>';
+  }
+}
+
+function renderDepoimentos() {
+  const list = document.getElementById("depoimentosList");
+  if (!allDepoimentos.length) {
+    list.innerHTML = '<div class="notes-empty">Nenhum depoimento cadastrado ainda.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+  allDepoimentos.forEach((dep, index) => {
+    const card = document.createElement("div");
+    card.className = "content-item-card" + (dep.ativo ? "" : " inactive");
+    card.innerHTML = `
+      <div class="content-item-main">
+        <div class="content-item-title">${dep.nome || "(sem nome)"} ${dep.cargo ? `— ${dep.cargo}` : ""}</div>
+        <div class="content-item-sub">${dep.citacao ? `"${dep.citacao}"` : "Sem citação"}</div>
+      </div>
+      <div class="content-item-actions">
+        <button type="button" class="content-icon-btn" data-action="up" title="Mover para cima" ${index === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" class="content-icon-btn" data-action="down" title="Mover para baixo" ${index === allDepoimentos.length - 1 ? "disabled" : ""}>↓</button>
+        <button type="button" class="content-icon-btn" data-action="toggle" title="${dep.ativo ? "Desativar" : "Ativar"}">${dep.ativo ? "👁️" : "🚫"}</button>
+        <button type="button" class="content-icon-btn" data-action="edit" title="Editar">✏️</button>
+        <button type="button" class="content-icon-btn danger" data-action="delete" title="Excluir">🗑️</button>
+      </div>
+    `;
+    card.querySelector('[data-action="up"]').addEventListener("click", () => moveDepoimento(dep.id, -1));
+    card.querySelector('[data-action="down"]').addEventListener("click", () => moveDepoimento(dep.id, 1));
+    card.querySelector('[data-action="toggle"]').addEventListener("click", () => toggleDepoimentoAtivo(dep));
+    card.querySelector('[data-action="edit"]').addEventListener("click", () => openDepoimentoModal(dep));
+    card.querySelector('[data-action="delete"]').addEventListener("click", () => deleteDepoimento(dep));
+    list.appendChild(card);
+  });
+}
+
+async function moveDepoimento(id, direction) {
+  const index = allDepoimentos.findIndex(d => d.id === id);
+  const targetIndex = index + direction;
+  if (index === -1 || targetIndex < 0 || targetIndex >= allDepoimentos.length) return;
+
+  const current = allDepoimentos[index];
+  const target = allDepoimentos[targetIndex];
+  const currentOrdem = current.ordem;
+  const targetOrdem = target.ordem;
+
+  try {
+    await Promise.all([
+      supabaseClient.from("depoimentos").update({ ordem: targetOrdem }).eq("id", current.id),
+      supabaseClient.from("depoimentos").update({ ordem: currentOrdem }).eq("id", target.id)
+    ]);
+    await loadDepoimentos();
+  } catch (error) {
+    console.error("Erro ao reordenar depoimentos:", error);
+    alert("Não foi possível reordenar os depoimentos.");
+  }
+}
+
+async function toggleDepoimentoAtivo(dep) {
+  try {
+    const { error } = await supabaseClient.from("depoimentos").update({ ativo: !dep.ativo }).eq("id", dep.id);
+    if (error) throw error;
+    await loadDepoimentos();
+  } catch (error) {
+    console.error("Erro ao atualizar depoimento:", error);
+    alert("Não foi possível atualizar o depoimento.");
+  }
+}
+
+async function deleteDepoimento(dep) {
+  if (!confirm(`Excluir o depoimento de "${dep.nome}"? Essa ação não pode ser desfeita.`)) return;
+  try {
+    const { error } = await supabaseClient.from("depoimentos").delete().eq("id", dep.id);
+    if (error) throw error;
+    await loadDepoimentos();
+  } catch (error) {
+    console.error("Erro ao excluir depoimento:", error);
+    alert("Não foi possível excluir o depoimento.");
+  }
+}
+
+const depoimentoModalOverlay = document.getElementById("depoimentoModalOverlay");
+
+function openDepoimentoModal(dep) {
+  document.getElementById("depoimentoModalTitle").textContent = dep ? "Editar depoimento" : "Novo depoimento";
+  document.getElementById("depoimentoId").value = dep ? dep.id : "";
+  document.getElementById("depoimentoNome").value = dep ? (dep.nome || "") : "";
+  document.getElementById("depoimentoCargo").value = dep ? (dep.cargo || "") : "";
+  document.getElementById("depoimentoVideoUrl").value = dep ? (dep.video_url || "") : "";
+  document.getElementById("depoimentoCitacao").value = dep ? (dep.citacao || "") : "";
+  document.getElementById("depoimentoAtivo").checked = dep ? !!dep.ativo : true;
+  depoimentoModalOverlay.classList.add("open");
+}
+
+function closeDepoimentoModal() { depoimentoModalOverlay.classList.remove("open"); }
+
+document.getElementById("addDepoimentoBtn").addEventListener("click", () => openDepoimentoModal(null));
+document.getElementById("closeDepoimentoModal").addEventListener("click", closeDepoimentoModal);
+depoimentoModalOverlay.addEventListener("click", (e) => { if (e.target === depoimentoModalOverlay) closeDepoimentoModal(); });
+
+document.getElementById("saveDepoimentoBtn").addEventListener("click", async () => {
+  const id = document.getElementById("depoimentoId").value;
+  const payload = {
+    nome: document.getElementById("depoimentoNome").value.trim(),
+    cargo: document.getElementById("depoimentoCargo").value.trim(),
+    video_url: document.getElementById("depoimentoVideoUrl").value.trim(),
+    citacao: document.getElementById("depoimentoCitacao").value.trim(),
+    ativo: document.getElementById("depoimentoAtivo").checked
+  };
+
+  if (!payload.nome) { alert("Informe o nome do colaborador."); return; }
+
+  try {
+    if (id) {
+      const { error } = await supabaseClient.from("depoimentos").update(payload).eq("id", id);
+      if (error) throw error;
+    } else {
+      const maxOrdem = allDepoimentos.reduce((max, d) => Math.max(max, d.ordem || 0), 0);
+      const { error } = await supabaseClient.from("depoimentos").insert({ ...payload, ordem: maxOrdem + 1 });
+      if (error) throw error;
+    }
+    closeDepoimentoModal();
+    await loadDepoimentos();
+  } catch (error) {
+    console.error("Erro ao salvar depoimento:", error);
+    alert("Não foi possível salvar o depoimento.");
+  }
+});
+
+// --- UNIDADES ---
+
+let allUnidades = [];
+
+async function loadUnidades() {
+  const list = document.getElementById("unidadesList");
+  try {
+    const { data, error } = await supabaseClient
+      .from("unidades")
+      .select("*")
+      .order("ordem", { ascending: true });
+
+    if (error) throw error;
+    allUnidades = data || [];
+    renderUnidades();
+  } catch (error) {
+    console.error("Erro ao carregar unidades:", error);
+    list.innerHTML = '<div class="notes-error">Não foi possível carregar as unidades.</div>';
+  }
+}
+
+function renderUnidades() {
+  const list = document.getElementById("unidadesList");
+  if (!allUnidades.length) {
+    list.innerHTML = '<div class="notes-empty">Nenhuma unidade cadastrada ainda.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+  allUnidades.forEach((un, index) => {
+    const card = document.createElement("div");
+    card.className = "content-item-card" + (un.ativo ? "" : " inactive");
+    card.innerHTML = `
+      <div class="content-item-main">
+        <div class="content-item-title">${un.nome_unidade}</div>
+        <div class="content-item-sub">${un.endereco} — ${un.cidade}/${un.uf} ${un.cep ? `• ${un.cep}` : ""}</div>
+      </div>
+      <div class="content-item-actions">
+        <button type="button" class="content-icon-btn" data-action="up" title="Mover para cima" ${index === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" class="content-icon-btn" data-action="down" title="Mover para baixo" ${index === allUnidades.length - 1 ? "disabled" : ""}>↓</button>
+        <button type="button" class="content-icon-btn" data-action="toggle" title="${un.ativo ? "Desativar" : "Ativar"}">${un.ativo ? "👁️" : "🚫"}</button>
+        <button type="button" class="content-icon-btn" data-action="edit" title="Editar">✏️</button>
+        <button type="button" class="content-icon-btn danger" data-action="delete" title="Excluir">🗑️</button>
+      </div>
+    `;
+    card.querySelector('[data-action="up"]').addEventListener("click", () => moveUnidade(un.id, -1));
+    card.querySelector('[data-action="down"]').addEventListener("click", () => moveUnidade(un.id, 1));
+    card.querySelector('[data-action="toggle"]').addEventListener("click", () => toggleUnidadeAtivo(un));
+    card.querySelector('[data-action="edit"]').addEventListener("click", () => openUnidadeModal(un));
+    card.querySelector('[data-action="delete"]').addEventListener("click", () => deleteUnidade(un));
+    list.appendChild(card);
+  });
+}
+
+async function moveUnidade(id, direction) {
+  const index = allUnidades.findIndex(u => u.id === id);
+  const targetIndex = index + direction;
+  if (index === -1 || targetIndex < 0 || targetIndex >= allUnidades.length) return;
+
+  const current = allUnidades[index];
+  const target = allUnidades[targetIndex];
+  const currentOrdem = current.ordem;
+  const targetOrdem = target.ordem;
+
+  try {
+    await Promise.all([
+      supabaseClient.from("unidades").update({ ordem: targetOrdem }).eq("id", current.id),
+      supabaseClient.from("unidades").update({ ordem: currentOrdem }).eq("id", target.id)
+    ]);
+    await loadUnidades();
+  } catch (error) {
+    console.error("Erro ao reordenar unidades:", error);
+    alert("Não foi possível reordenar as unidades.");
+  }
+}
+
+async function toggleUnidadeAtivo(un) {
+  try {
+    const { error } = await supabaseClient.from("unidades").update({ ativo: !un.ativo }).eq("id", un.id);
+    if (error) throw error;
+    await loadUnidades();
+  } catch (error) {
+    console.error("Erro ao atualizar unidade:", error);
+    alert("Não foi possível atualizar a unidade.");
+  }
+}
+
+async function deleteUnidade(un) {
+  if (!confirm(`Excluir a unidade "${un.nome_unidade}"? Essa ação não pode ser desfeita.`)) return;
+  try {
+    const { error } = await supabaseClient.from("unidades").delete().eq("id", un.id);
+    if (error) throw error;
+    await loadUnidades();
+  } catch (error) {
+    console.error("Erro ao excluir unidade:", error);
+    alert("Não foi possível excluir a unidade.");
+  }
+}
+
+const unidadeModalOverlay = document.getElementById("unidadeModalOverlay");
+
+function openUnidadeModal(un) {
+  document.getElementById("unidadeModalTitle").textContent = un ? "Editar unidade" : "Nova unidade";
+  document.getElementById("unidadeId").value = un ? un.id : "";
+  document.getElementById("unidadeNome").value = un ? (un.nome_unidade || "") : "";
+  document.getElementById("unidadeCidade").value = un ? (un.cidade || "") : "";
+  document.getElementById("unidadeUf").value = un ? (un.uf || "") : "";
+  document.getElementById("unidadeEndereco").value = un ? (un.endereco || "") : "";
+  document.getElementById("unidadeCep").value = un ? (un.cep || "") : "";
+  document.getElementById("unidadeImagemUrl").value = un ? (un.imagem_url || "") : "";
+  document.getElementById("unidadeAtivo").checked = un ? !!un.ativo : true;
+  unidadeModalOverlay.classList.add("open");
+}
+
+function closeUnidadeModal() { unidadeModalOverlay.classList.remove("open"); }
+
+document.getElementById("addUnidadeBtn").addEventListener("click", () => openUnidadeModal(null));
+document.getElementById("closeUnidadeModal").addEventListener("click", closeUnidadeModal);
+unidadeModalOverlay.addEventListener("click", (e) => { if (e.target === unidadeModalOverlay) closeUnidadeModal(); });
+
+document.getElementById("saveUnidadeBtn").addEventListener("click", async () => {
+  const id = document.getElementById("unidadeId").value;
+  const payload = {
+    nome_unidade: document.getElementById("unidadeNome").value.trim(),
+    cidade: document.getElementById("unidadeCidade").value.trim(),
+    uf: document.getElementById("unidadeUf").value.trim().toUpperCase(),
+    endereco: document.getElementById("unidadeEndereco").value.trim(),
+    cep: document.getElementById("unidadeCep").value.trim(),
+    imagem_url: document.getElementById("unidadeImagemUrl").value.trim(),
+    maps_query: `${document.getElementById("unidadeEndereco").value.trim()}, ${document.getElementById("unidadeCidade").value.trim()} - ${document.getElementById("unidadeUf").value.trim().toUpperCase()}, ${document.getElementById("unidadeCep").value.trim()}`,
+    ativo: document.getElementById("unidadeAtivo").checked
+  };
+
+  if (!payload.nome_unidade || !payload.cidade || !payload.endereco) {
+    alert("Preencha ao menos nome, cidade e endereço da unidade.");
+    return;
+  }
+
+  try {
+    if (id) {
+      const { error } = await supabaseClient.from("unidades").update(payload).eq("id", id);
+      if (error) throw error;
+    } else {
+      const maxOrdem = allUnidades.reduce((max, u) => Math.max(max, u.ordem || 0), 0);
+      const { error } = await supabaseClient.from("unidades").insert({ ...payload, ordem: maxOrdem + 1 });
+      if (error) throw error;
+    }
+    closeUnidadeModal();
+    await loadUnidades();
+  } catch (error) {
+    console.error("Erro ao salvar unidade:", error);
+    alert("Não foi possível salvar a unidade.");
+  }
+});
     
   // =========================================================
   // FILTROS
   // =========================================================
 
   function applyFilters() {
+
 
     const search =
       searchCandidates.value

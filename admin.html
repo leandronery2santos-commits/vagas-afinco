@@ -472,6 +472,38 @@
       word-break: break-word;
     }
 
+    .kanban-card-interview {
+      margin-top: 6px;
+      padding: 4px 7px;
+      background: #eef6ff;
+      color: #1a5fb4;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .email-template-item {
+      border: 1px solid #e6e6e6;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+
+    .email-template-item .content-field {
+      margin-bottom: 10px;
+    }
+
+    .email-template-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .email-template-header h4 {
+      margin: 0;
+    }
+
     .kanban-empty {
       color: #aaa;
       text-align: center;
@@ -1500,6 +1532,46 @@
   </div>
 </section>
 
+<!-- COMUNICAÇÃO AUTOMÁTICA -->
+<section class="content-manager-section">
+  <div class="dashboard-section-title">Comunicação automática</div>
+  <p class="content-panel-hint">
+    Edite o assunto e o texto de cada e-mail automático. Variáveis disponíveis:
+    <code>{{nome}}</code>, <code>{{email}}</code>, <code>{{whatsapp}}</code>, <code>{{cidade}}</code>,
+    <code>{{vaga}}</code>, <code>{{data}}</code>, <code>{{hora}}</code>, <code>{{local}}</code>, <code>{{empresa}}</code>.
+    Desative um template para pausar aquele envio automático sem apagar o texto.
+  </p>
+  <div id="emailTemplatesList" class="content-item-list"><div class="notes-loading">Carregando templates...</div></div>
+</section>
+
+<!-- MODAL AGENDAR/ALTERAR ENTREVISTA -->
+<div class="modal-overlay" id="interviewModalOverlay">
+  <div class="candidate-modal content-modal">
+    <button type="button" class="close-modal" id="closeInterviewModal">&times;</button>
+    <div class="modal-header">
+      <div class="modal-kicker">ENTREVISTA</div>
+      <h2 id="interviewModalTitle">Agendar entrevista</h2>
+    </div>
+    <input type="hidden" id="interviewCandidateId">
+    <div class="content-field">
+      <label>Data</label>
+      <input type="date" id="interviewDate">
+    </div>
+    <div class="content-field">
+      <label>Horário</label>
+      <input type="time" id="interviewTime">
+    </div>
+    <div class="content-field">
+      <label>Local (opcional)</label>
+      <input type="text" id="interviewLocal" placeholder="Ex: Unidade São Francisco, sala 2">
+    </div>
+    <p class="content-panel-hint">Ao salvar, o candidato recebe um e-mail de confirmação automaticamente e um lembrete 6 horas antes do horário marcado.</p>
+    <div class="modal-actions">
+      <button type="button" id="saveInterviewBtn" class="add-note-button">Salvar entrevista</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL DEPOIMENTO -->
 <div class="modal-overlay" id="depoimentoModalOverlay">
   <div class="candidate-modal content-modal">
@@ -1953,6 +2025,33 @@
 
         </div>
 
+
+        <!-- ENTREVISTA -->
+
+        <div class="detail-item" id="modalInterviewWrapper" style="display:none;">
+
+          <div class="detail-label">
+            Entrevista agendada
+          </div>
+
+          <div
+            class="detail-value"
+            id="modalCandidateInterview"
+          >
+            -
+          </div>
+
+          <button
+            type="button"
+            id="changeInterviewBtn"
+            class="add-note-button"
+            style="margin-top:8px;"
+          >
+            Alterar entrevista
+          </button>
+
+        </div>
+
       </div>
 
 
@@ -2045,6 +2144,23 @@
   const resultsInfo =
     document.getElementById("resultsInfo");
 
+  const interviewModalOverlay =
+    document.getElementById("interviewModalOverlay");
+  const interviewCandidateIdInput =
+    document.getElementById("interviewCandidateId");
+  const interviewDateInput =
+    document.getElementById("interviewDate");
+  const interviewTimeInput =
+    document.getElementById("interviewTime");
+  const interviewLocalInput =
+    document.getElementById("interviewLocal");
+  const interviewModalTitle =
+    document.getElementById("interviewModalTitle");
+  const saveInterviewBtn =
+    document.getElementById("saveInterviewBtn");
+  const closeInterviewModalBtn =
+    document.getElementById("closeInterviewModal");
+
 
   // =========================================================
   // ESTATÍSTICAS
@@ -2114,6 +2230,15 @@
 
   const modalCandidateStatus =
     document.getElementById("modalCandidateStatus");
+
+  const modalInterviewWrapper =
+    document.getElementById("modalInterviewWrapper");
+
+  const modalCandidateInterview =
+    document.getElementById("modalCandidateInterview");
+
+  const changeInterviewBtn =
+    document.getElementById("changeInterviewBtn");
 
   const modalWhatsappButton =
     document.getElementById("modalWhatsappButton");
@@ -2269,6 +2394,7 @@
     await loadSiteContent();
     await loadDepoimentos();
     await loadUnidades();
+    await loadEmailTemplates();
 
   }
 
@@ -3285,7 +3411,100 @@ document.getElementById("saveUnidadeBtn").addEventListener("click", async () => 
     alert("Não foi possível salvar a unidade.");
   }
 });
-    
+
+// --- TEMPLATES DE E-MAIL ---
+
+const EMAIL_TEMPLATE_ORDER = [
+  "candidatura_recebida",
+  "confirmacao_entrevista",
+  "lembrete_entrevista",
+  "aprovacao",
+  "contratacao"
+];
+
+async function loadEmailTemplates() {
+  const list = document.getElementById("emailTemplatesList");
+  if (!list) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("email_templates")
+      .select("tipo, nome, assunto, corpo_html, ativo");
+
+    if (error) throw error;
+
+    const byTipo = {};
+    (data || []).forEach(t => { byTipo[t.tipo] = t; });
+
+    const ordered = EMAIL_TEMPLATE_ORDER
+      .map(tipo => byTipo[tipo])
+      .filter(Boolean);
+
+    if (!ordered.length) {
+      list.innerHTML = '<div class="notes-empty">Nenhum template encontrado. Rode a migração SQL para criá-los.</div>';
+      return;
+    }
+
+    list.innerHTML = ordered.map(t => `
+      <div class="email-template-item" data-tipo="${t.tipo}">
+        <div class="email-template-header">
+          <h4>${escapeHtml(t.nome)}</h4>
+          <label class="content-toggle-label">
+            <input type="checkbox" class="email-template-ativo" ${t.ativo ? "checked" : ""}> Ativo
+          </label>
+        </div>
+        <div class="content-field">
+          <label>Assunto</label>
+          <input type="text" class="email-template-assunto" value="${(t.assunto || "").replace(/"/g, "&quot;")}">
+        </div>
+        <div class="content-field">
+          <label>Corpo (HTML)</label>
+          <textarea class="candidate-note-input email-template-corpo" rows="6">${t.corpo_html || ""}</textarea>
+        </div>
+        <div class="content-panel-actions">
+          <button type="button" class="add-note-button email-template-save">Salvar template</button>
+          <span class="content-save-status email-template-status"></span>
+        </div>
+      </div>
+    `).join("");
+
+    list.querySelectorAll(".email-template-item").forEach(item => {
+      const tipo = item.dataset.tipo;
+      item.querySelector(".email-template-save").addEventListener("click", async () => {
+        const btn = item.querySelector(".email-template-save");
+        const statusEl = item.querySelector(".email-template-status");
+        const assunto = item.querySelector(".email-template-assunto").value.trim();
+        const corpo_html = item.querySelector(".email-template-corpo").value;
+        const ativo = item.querySelector(".email-template-ativo").checked;
+
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
+
+        const { error: saveError } = await supabaseClient
+          .from("email_templates")
+          .update({ assunto, corpo_html, ativo, updated_at: new Date().toISOString() })
+          .eq("tipo", tipo);
+
+        btn.disabled = false;
+        btn.textContent = "Salvar template";
+
+        if (saveError) {
+          console.error("Erro ao salvar template:", saveError);
+          alert("Não foi possível salvar o template.");
+          return;
+        }
+
+        statusEl.textContent = "✓ Salvo";
+        setTimeout(() => { statusEl.textContent = ""; }, 2500);
+      });
+    });
+
+  } catch (error) {
+    console.error("Erro ao carregar templates de e-mail:", error);
+    list.innerHTML = '<div class="notes-error">Não foi possível carregar os templates de e-mail.</div>';
+  }
+}
+
   // =========================================================
   // FILTROS
   // =========================================================
@@ -3623,6 +3842,12 @@ document.getElementById("saveUnidadeBtn").addEventListener("click", async () => 
         : "Idade não informada";
 
 
+    const interviewInfo =
+      candidate.entrevista_agendada_em
+        ? `<div class="kanban-card-info kanban-card-interview">🗓️ ${escapeHtml(formatInterviewDateTime(candidate.entrevista_agendada_em))}</div>`
+        : "";
+
+
     card.innerHTML = `
 
       <div class="kanban-card-name">
@@ -3640,6 +3865,8 @@ document.getElementById("saveUnidadeBtn").addEventListener("click", async () => 
       <div class="kanban-card-info">
         👤 ${escapeHtml(idade)}
       </div>
+
+      ${interviewInfo}
 
     `;
 
@@ -3799,6 +4026,26 @@ document.getElementById("saveUnidadeBtn").addEventListener("click", async () => 
             }
 
 
+            // Soltar um card na coluna "ENTREVISTA AGENDADA" abre o modal
+            // de data/hora em vez de mover direto; o card só muda de
+            // coluna quando a entrevista é confirmada (saveInterview).
+            if (newStatus === "entrevista_agendada") {
+
+              const candidateForInterview =
+                allCandidates.find(
+                  item => String(item.id) === String(candidateId)
+                );
+
+              openInterviewModal(
+                candidateId,
+                candidateForInterview
+              );
+
+              return;
+
+            }
+
+
             await moveCandidate(
               candidateId,
               newStatus
@@ -3894,6 +4141,162 @@ document.getElementById("saveUnidadeBtn").addEventListener("click", async () => 
 
 
   // =========================================================
+  // ENTREVISTA — AGENDAR / ALTERAR
+  // =========================================================
+
+  function formatInterviewDateTime(isoValue) {
+
+    if (!isoValue) return "-";
+
+    const date = new Date(isoValue);
+
+    const dataFmt = date.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+    const horaFmt = date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
+
+    return `${dataFmt} às ${horaFmt}`;
+
+  }
+
+
+  function openInterviewModal(candidateId, candidate) {
+
+    interviewCandidateIdInput.value = candidateId;
+
+    const isReschedule = candidate && candidate.entrevista_agendada_em;
+
+    interviewModalTitle.textContent = isReschedule ? "Alterar entrevista" : "Agendar entrevista";
+
+    if (isReschedule) {
+
+      const current = new Date(candidate.entrevista_agendada_em);
+      // toISOString() dá UTC; usamos os componentes locais do navegador para
+      // preencher os campos <input type="date"/"time"> corretamente.
+      const pad = n => String(n).padStart(2, "0");
+      interviewDateInput.value = `${current.getFullYear()}-${pad(current.getMonth() + 1)}-${pad(current.getDate())}`;
+      interviewTimeInput.value = `${pad(current.getHours())}:${pad(current.getMinutes())}`;
+      interviewLocalInput.value = candidate.entrevista_local || "";
+
+    } else {
+
+      interviewDateInput.value = "";
+      interviewTimeInput.value = "";
+      interviewLocalInput.value = "";
+
+    }
+
+    interviewModalOverlay.classList.add("open");
+
+  }
+
+
+  function closeInterviewModal() {
+
+    interviewModalOverlay.classList.remove("open");
+    interviewCandidateIdInput.value = "";
+
+  }
+
+
+  closeInterviewModalBtn.addEventListener("click", closeInterviewModal);
+
+  interviewModalOverlay.addEventListener("click", event => {
+
+    if (event.target === interviewModalOverlay) closeInterviewModal();
+
+  });
+
+
+  saveInterviewBtn.addEventListener("click", async () => {
+
+    const candidateId = interviewCandidateIdInput.value;
+
+    if (!candidateId) return;
+
+    if (!interviewDateInput.value || !interviewTimeInput.value) {
+
+      alert("Selecione a data e o horário da entrevista.");
+      return;
+
+    }
+
+
+    const isoDateTime =
+      new Date(`${interviewDateInput.value}T${interviewTimeInput.value}:00`).toISOString();
+
+
+    saveInterviewBtn.disabled = true;
+    saveInterviewBtn.textContent = "Salvando...";
+
+
+    const { error } = await supabaseClient
+      .from("Candidatos")
+      .update({
+        status: "entrevista_agendada",
+        entrevista_agendada_em: isoDateTime,
+        entrevista_local: interviewLocalInput.value.trim() || null,
+        entrevista_atualizada_em: new Date().toISOString()
+      })
+      .eq("id", candidateId);
+
+
+    saveInterviewBtn.disabled = false;
+    saveInterviewBtn.textContent = "Salvar entrevista";
+
+
+    if (error) {
+
+      console.error("Erro ao salvar entrevista:", error);
+      alert("Não foi possível salvar a entrevista.");
+      return;
+
+    }
+
+
+    const candidate = allCandidates.find(item => String(item.id) === String(candidateId));
+
+    if (candidate) {
+
+      candidate.status = "entrevista_agendada";
+      candidate.entrevista_agendada_em = isoDateTime;
+      candidate.entrevista_local = interviewLocalInput.value.trim() || null;
+
+    }
+
+
+    closeInterviewModal();
+
+    updateStats(allCandidates);
+    applyFilters();
+
+
+    // Se a ficha do candidato estiver aberta, atualiza o status e o bloco de entrevista nela também.
+    if (currentCandidateId && String(currentCandidateId) === String(candidateId) && candidate) {
+
+      modalCandidateStatus.value = "entrevista_agendada";
+      modalInterviewWrapper.style.display = "block";
+      modalCandidateInterview.textContent = formatInterviewDateTime(candidate.entrevista_agendada_em);
+
+    }
+
+  });
+
+
+  if (changeInterviewBtn) {
+
+    changeInterviewBtn.addEventListener("click", () => {
+
+      if (!currentCandidateId) return;
+
+      const candidate = allCandidates.find(item => String(item.id) === String(currentCandidateId));
+
+      openInterviewModal(currentCandidateId, candidate);
+
+    });
+
+  }
+
+
+  // =========================================================
   // ABRIR FICHA
   // =========================================================
 
@@ -3976,6 +4379,19 @@ document.getElementById("saveUnidadeBtn").addEventListener("click", async () => 
 
     modalCandidateStatus.value =
       status;
+
+
+    if (candidate.entrevista_agendada_em && (status === "entrevista_agendada" || status === "entrevista")) {
+
+      modalInterviewWrapper.style.display = "block";
+      modalCandidateInterview.textContent = formatInterviewDateTime(candidate.entrevista_agendada_em) +
+        (candidate.entrevista_local ? ` — ${candidate.entrevista_local}` : "");
+
+    } else {
+
+      modalInterviewWrapper.style.display = "none";
+
+    }
 
 
     const whatsapp =
@@ -4154,6 +4570,32 @@ document.getElementById("saveUnidadeBtn").addEventListener("click", async () => 
 
       const newStatus =
         modalCandidateStatus.value;
+
+
+      // Ao selecionar "ENTREVISTA AGENDADA", abrir o modal de data/hora
+      // em vez de salvar o status direto. O status só é gravado quando
+      // o admin confirma a data no modal (função saveInterview).
+      if (newStatus === "entrevista_agendada") {
+
+        const candidateForInterview =
+          allCandidates.find(
+            item => String(item.id) === String(currentCandidateId)
+          );
+
+        // Reverte visualmente o select para o status atual até confirmar
+        modalCandidateStatus.value =
+          candidateForInterview
+            ? normalizeStatus(candidateForInterview.status)
+            : newStatus;
+
+        openInterviewModal(
+          currentCandidateId,
+          candidateForInterview
+        );
+
+        return;
+
+      }
 
 
       const {

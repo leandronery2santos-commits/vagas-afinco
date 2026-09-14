@@ -167,6 +167,67 @@
     .logout-button:hover {
       background: #222;
     }
+ 
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-button {
+      border: 1px solid #555;
+      background: transparent;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .settings-button:hover,
+    .settings-button.active {
+      background: #222;
+      border-color: #ffd800;
+      color: #ffd800;
+    }
+
+    .dashboard-view,
+    .settings-view {
+      display: block;
+    }
+
+    .settings-view {
+      display: none;
+    }
+
+    .settings-back-button {
+      border: 1px solid #ddd;
+      background: white;
+      color: #222;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .settings-back-button:hover {
+      background: #f5f5f5;
+      border-color: #ccc;
+    }
+
+    @media (max-width: 600px) {
+      .topbar-actions {
+        gap: 6px;
+      }
+
+      .settings-button,
+      .logout-button {
+        padding: 9px 11px;
+        font-size: 12px;
+      }
+    }
 
     .content {
       max-width: 1400px;
@@ -1086,12 +1147,24 @@
         AFINCO <span>RECRUTAMENTO</span>
       </div>
 
-      <button
-        id="logoutButton"
-        class="logout-button"
-      >
-        Sair
-      </button>
+      <div class="topbar-actions">
+        <button
+          id="settingsButton"
+          class="settings-button"
+          type="button"
+          title="Configurações do site"
+        >
+          ⚙️ Configuração
+        </button>
+
+        <button
+          id="logoutButton"
+          class="logout-button"
+          type="button"
+        >
+          Sair
+        </button>
+      </div>
 
     </header>
 
@@ -1099,6 +1172,9 @@
     <!-- CONTEÚDO -->
 
     <main class="content">
+
+      <!-- VISÃO PRINCIPAL DO DASHBOARD -->
+      <div id="dashboardView" class="dashboard-view">
 
       <div class="page-title">
 
@@ -1493,6 +1569,19 @@
   </div>
 </section>
 
+      </div><!-- /dashboardView -->
+
+      <!-- CONFIGURAÇÃO DO SITE -->
+      <div id="settingsView" class="settings-view">
+        <div class="page-title">
+          <h1>Configuração</h1>
+          <p>Gerencie tudo o que controla o conteúdo e a comunicação do site.</p>
+        </div>
+
+        <button type="button" id="backToDashboardButton" class="settings-back-button">
+          ← Voltar ao dashboard
+        </button>
+
 <!-- CONTEÚDO DO SITE -->
 <section class="content-manager-section">
   <div class="dashboard-section-title">Gerenciar conteúdo do site</div>
@@ -1543,6 +1632,8 @@
   </p>
   <div id="emailTemplatesList" class="content-item-list"><div class="notes-loading">Carregando templates...</div></div>
 </section>
+
+      </div><!-- /settingsView -->
 
 <!-- MODAL AGENDAR/ALTERAR ENTREVISTA -->
 <div class="modal-overlay" id="interviewModalOverlay">
@@ -2131,6 +2222,34 @@
   const logoutButton =
     document.getElementById("logoutButton");
 
+  const settingsButton =
+    document.getElementById("settingsButton");
+
+  const backToDashboardButton =
+    document.getElementById("backToDashboardButton");
+
+  const dashboardView =
+    document.getElementById("dashboardView");
+
+  const settingsView =
+    document.getElementById("settingsView");
+
+  function showDashboardView() {
+    if (dashboardView) dashboardView.style.display = "block";
+    if (settingsView) settingsView.style.display = "none";
+    if (settingsButton) settingsButton.classList.remove("active");
+  }
+
+  function showSettingsView() {
+    if (dashboardView) dashboardView.style.display = "none";
+    if (settingsView) settingsView.style.display = "block";
+    if (settingsButton) settingsButton.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  if (settingsButton) settingsButton.addEventListener("click", showSettingsView);
+  if (backToDashboardButton) backToDashboardButton.addEventListener("click", showDashboardView);
+
   const refreshButton =
     document.getElementById("refreshButton");
 
@@ -2365,6 +2484,7 @@
       await supabaseClient.auth.signOut();
 
       dashboard.style.display = "none";
+      showDashboardView();
 
       loginScreen.style.display = "flex";
 
@@ -2387,6 +2507,8 @@
 
     dashboard.style.display =
       "block";
+
+    showDashboardView();
 
     loginButton.disabled =
       false;

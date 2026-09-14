@@ -3432,14 +3432,37 @@ async function loadEmailTemplates() {
   if (!list) return;
 
   try {
+    // Buscamos a linha inteira (em vez de nomear colunas específicas) porque
+    // o nome exato das colunas pode variar de um banco para outro (ex: "tipo"
+    // vs "id", "corpo_html" vs "corpo"). Pedir uma coluna que não existe faz
+    // o Postgres recusar a consulta inteira, o que gerava o erro
+    // "Não foi possível carregar os templates de e-mail.".
     const { data, error } = await supabaseClient
       .from("email_templates")
-      .select("tipo, nome, assunto, corpo_html, ativo");
+      .select("*");
 
     if (error) throw error;
 
+    const rows = data || [];
+
+    if (!rows.length) {
+      list.innerHTML = '<div class="notes-empty">Nenhum template encontrado. Rode a migração SQL para criá-los.</div>';
+      return;
+    }
+
+    // Detecta automaticamente qual coluna guarda cada informação,
+    // olhando as chaves que realmente vieram do banco.
+    const sample = rows[0];
+    const pick = (candidates, fallback) => candidates.find(k => k in sample) || fallback;
+    const TIPO_COL = pick(["tipo", "id", "chave", "key", "slug"], "tipo");
+    const CORPO_COL = pick(["corpo_html", "corpo", "corpo_texto", "body", "conteudo"], "corpo_html");
+    const NOME_COL = pick(["nome", "titulo", "name", "label"], "nome");
+    const ASSUNTO_COL = pick(["assunto", "subject"], "assunto");
+    const ATIVO_COL = pick(["ativo", "active", "enabled", "habilitado"], "ativo");
+    const HAS_UPDATED_AT = "updated_at" in sample;
+
     const byTipo = {};
-    (data || []).forEach(t => { byTipo[t.tipo] = t; });
+    rows.forEach(t => { byTipo[t[TIPO_COL]] = t; });
 
     const ordered = EMAIL_TEMPLATE_ORDER
       .map(tipo => byTipo[tipo])
@@ -3451,20 +3474,20 @@ async function loadEmailTemplates() {
     }
 
     list.innerHTML = ordered.map(t => `
-      <div class="email-template-item" data-tipo="${t.tipo}">
+      <div class="email-template-item" data-tipo="${t[TIPO_COL]}">
         <div class="email-template-header">
-          <h4>${escapeHtml(t.nome)}</h4>
+          <h4>${escapeHtml(t[NOME_COL] || t[TIPO_COL])}</h4>
           <label class="content-toggle-label">
-            <input type="checkbox" class="email-template-ativo" ${t.ativo ? "checked" : ""}> Ativo
+            <input type="checkbox" class="email-template-ativo" ${t[ATIVO_COL] ? "checked" : ""}> Ativo
           </label>
         </div>
         <div class="content-field">
           <label>Assunto</label>
-          <input type="text" class="email-template-assunto" value="${(t.assunto || "").replace(/"/g, "&quot;")}">
+          <input type="text" class="email-template-assunto" value="${(t[ASSUNTO_COL] || "").replace(/"/g, "&quot;")}">
         </div>
         <div class="content-field">
           <label>Corpo (HTML)</label>
-          <textarea class="candidate-note-input email-template-corpo" rows="6">${t.corpo_html || ""}</textarea>
+          <textarea class="candidate-note-input email-template-corpo" rows="6">${t[CORPO_COL] || ""}</textarea>
         </div>
         <div class="content-panel-actions">
           <button type="button" class="add-note-button email-template-save">Salvar template</button>
@@ -3479,16 +3502,23 @@ async function loadEmailTemplates() {
         const btn = item.querySelector(".email-template-save");
         const statusEl = item.querySelector(".email-template-status");
         const assunto = item.querySelector(".email-template-assunto").value.trim();
-        const corpo_html = item.querySelector(".email-template-corpo").value;
+        const corpo = item.querySelector(".email-template-corpo").value;
         const ativo = item.querySelector(".email-template-ativo").checked;
 
         btn.disabled = true;
         btn.textContent = "Salvando...";
 
+        const updatePayload = {
+          [ASSUNTO_COL]: assunto,
+          [CORPO_COL]: corpo,
+          [ATIVO_COL]: ativo,
+        };
+        if (HAS_UPDATED_AT) updatePayload.updated_at = new Date().toISOString();
+
         const { error: saveError } = await supabaseClient
           .from("email_templates")
-          .update({ assunto, corpo_html, ativo, updated_at: new Date().toISOString() })
-          .eq("tipo", tipo);
+          .update(updatePayload)
+          .eq(TIPO_COL, tipo);
 
         btn.disabled = false;
         btn.textContent = "Salvar template";

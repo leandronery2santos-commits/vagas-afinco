@@ -1562,8 +1562,13 @@
       <input type="time" id="interviewTime">
     </div>
     <div class="content-field">
-      <label>Local (opcional)</label>
-      <input type="text" id="interviewLocal" placeholder="Ex: Unidade São Francisco, sala 2">
+      <label>Local</label>
+      <select id="interviewLocal">
+        <option value="">Selecione a unidade</option>
+        <option value="Matriz: R. Tapajós, 577 - São Francisco, Curitiba - PR, 80510-330">Matriz — R. Tapajós, 577</option>
+        <option value="Filial Curitiba: R. Inácio Lustosa, 1240 - São Francisco, Curitiba - PR, 81230-406">Filial Curitiba — R. Inácio Lustosa, 1240</option>
+        <option value="Filial Londrina: R. Pernambuco, 390 - Centro, Londrina - PR, 86020-320">Filial Londrina — R. Pernambuco, 390</option>
+      </select>
     </div>
     <p class="content-panel-hint">Ao salvar, o candidato recebe um e-mail de confirmação automaticamente e um lembrete 6 horas antes do horário marcado.</p>
     <div class="modal-actions">
@@ -4215,6 +4220,13 @@ async function loadEmailTemplates() {
     if (!interviewDateInput.value || !interviewTimeInput.value) {
 
       alert("Selecione a data e o horário da entrevista.");
+      return;
+
+    }
+
+    if (!interviewLocalInput.value) {
+
+      alert("Selecione a unidade (local) da entrevista.");
       return;
 
     }

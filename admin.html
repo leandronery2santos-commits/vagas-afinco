@@ -1149,6 +1149,15 @@
 
       <div class="topbar-actions">
         <button
+          id="leadsButton"
+          class="settings-button"
+          type="button"
+          title="Interessados em comprar imóvel (página /minhacasaminhavida)"
+        >
+          🏠 Interessados
+        </button>
+
+        <button
           id="settingsButton"
           class="settings-button"
           type="button"
@@ -1634,6 +1643,49 @@
 </section>
 
       </div><!-- /settingsView -->
+
+      <!-- INTERESSADOS EM COMPRAR IMÓVEL (página /minhacasaminhavida) -->
+      <div id="leadsView" class="settings-view">
+        <div class="page-title">
+          <h1>Interessados em imóvel</h1>
+          <p>Cadastros da página <a href="/minhacasaminhavida" target="_blank" rel="noopener">/minhacasaminhavida</a> (Minha Casa Minha Vida).</p>
+        </div>
+
+        <button type="button" id="leadsBackButton" class="settings-back-button">
+          ← Voltar ao dashboard
+        </button>
+
+        <section class="candidates-box">
+          <div class="box-header">
+            <h2>Interessados</h2>
+            <div class="topbar-actions">
+              <button type="button" id="leadsExportButton" class="clear-filters-button">Baixar planilha (CSV)</button>
+              <button type="button" id="leadsRefreshButton" class="refresh-button">Atualizar</button>
+            </div>
+          </div>
+
+          <div class="filters-box">
+            <input type="text" id="leadsSearch" class="filter-input" placeholder="Buscar por nome, telefone ou região...">
+            <select id="leadsStatusFilter" class="filter-select">
+              <option value="">Todos os status</option>
+              <option value="novo">Novo</option>
+              <option value="em_contato">Em contato</option>
+              <option value="visita">Visita agendada</option>
+              <option value="fechado">Fechado</option>
+              <option value="descartado">Descartado</option>
+            </select>
+            <select id="leadsTipoFilter" class="filter-select">
+              <option value="">Todos os tipos</option>
+              <option>Casa</option>
+              <option>Apartamento</option>
+              <option>Melhor opção no orçamento</option>
+            </select>
+          </div>
+
+          <div id="leadsInfo" class="results-info"></div>
+          <div class="table-wrapper" id="leadsContainer"><div class="loading">Carregando interessados...</div></div>
+        </section>
+      </div><!-- /leadsView -->
 
 <!-- MODAL AGENDAR/ALTERAR ENTREVISTA -->
 <div class="modal-overlay" id="interviewModalOverlay">
@@ -2234,21 +2286,166 @@
   const settingsView =
     document.getElementById("settingsView");
 
+  const leadsButton =
+    document.getElementById("leadsButton");
+
+  const leadsView =
+    document.getElementById("leadsView");
+
+  // A lista de candidatos fica fora das views; some só na tela de interessados
+  const candidatesSection =
+    document.getElementById("refreshButton")?.closest("section");
+
+  function setCandidatesVisible(visible) {
+    if (candidatesSection) candidatesSection.style.display = visible ? "" : "none";
+  }
+
   function showDashboardView() {
     if (dashboardView) dashboardView.style.display = "block";
     if (settingsView) settingsView.style.display = "none";
+    if (leadsView) leadsView.style.display = "none";
     if (settingsButton) settingsButton.classList.remove("active");
+    if (leadsButton) leadsButton.classList.remove("active");
+    setCandidatesVisible(true);
   }
 
   function showSettingsView() {
     if (dashboardView) dashboardView.style.display = "none";
     if (settingsView) settingsView.style.display = "block";
+    if (leadsView) leadsView.style.display = "none";
     if (settingsButton) settingsButton.classList.add("active");
+    if (leadsButton) leadsButton.classList.remove("active");
+    setCandidatesVisible(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showLeadsView() {
+    if (dashboardView) dashboardView.style.display = "none";
+    if (settingsView) settingsView.style.display = "none";
+    if (leadsView) leadsView.style.display = "block";
+    if (settingsButton) settingsButton.classList.remove("active");
+    if (leadsButton) leadsButton.classList.add("active");
+    setCandidatesVisible(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    loadLeads();
   }
 
   if (settingsButton) settingsButton.addEventListener("click", showSettingsView);
   if (backToDashboardButton) backToDashboardButton.addEventListener("click", showDashboardView);
+  if (leadsButton) leadsButton.addEventListener("click", showLeadsView);
+  document.getElementById("leadsBackButton")?.addEventListener("click", showDashboardView);
+
+
+  // =========================================================
+  // INTERESSADOS EM COMPRAR IMÓVEL (página /minhacasaminhavida)
+  // =========================================================
+
+  const LEAD_STATUS = {
+    novo: "Novo",
+    em_contato: "Em contato",
+    visita: "Visita agendada",
+    fechado: "Fechado",
+    descartado: "Descartado"
+  };
+
+  let allLeads = [];
+
+  async function loadLeads() {
+    const container = document.getElementById("leadsContainer");
+    container.innerHTML = '<div class="loading">Carregando interessados...</div>';
+    const { data, error } = await supabaseClient
+      .from("interessados_imovel")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("Erro ao carregar interessados:", error);
+      container.innerHTML = '<div class="error-box">Não foi possível carregar os interessados. Toque em Atualizar para tentar de novo.</div>';
+      return;
+    }
+    allLeads = data || [];
+    renderLeads();
+  }
+
+  function filteredLeads() {
+    const term = (document.getElementById("leadsSearch").value || "").trim().toLowerCase();
+    const status = document.getElementById("leadsStatusFilter").value;
+    const tipo = document.getElementById("leadsTipoFilter").value;
+    const termDigits = term.replace(/\D/g, "");
+    return allLeads.filter(lead =>
+      (!status || lead.status === status) &&
+      (!tipo || lead.tipo_imovel === tipo) &&
+      (!term ||
+        String(lead.nome || "").toLowerCase().includes(term) ||
+        String(lead.regiao || "").toLowerCase().includes(term) ||
+        (termDigits && String(lead.telefone || "").replace(/\D/g, "").includes(termDigits)))
+    );
+  }
+
+  function renderLeads() {
+    const container = document.getElementById("leadsContainer");
+    const leads = filteredLeads();
+    const novos = allLeads.filter(lead => lead.status === "novo").length;
+    document.getElementById("leadsInfo").textContent =
+      `${leads.length} de ${allLeads.length} cadastro(s) · ${novos} novo(s) aguardando contato`;
+    if (!leads.length) {
+      container.innerHTML = `<div class="empty">${allLeads.length ? "Nenhum cadastro com esses filtros." : "Nenhum cadastro ainda. Divulgue o link /minhacasaminhavida para começar a receber."}</div>`;
+      return;
+    }
+    container.innerHTML = `<table>
+      <thead><tr><th>Data</th><th>Nome</th><th>Telefone</th><th>Tipo</th><th>Região</th><th>Renda</th><th>Origem</th><th>Status</th></tr></thead>
+      <tbody>${leads.map(lead => {
+        const digits = String(lead.telefone || "").replace(/\D/g, "");
+        const whatsapp = digits ? `https://wa.me/55${digits}` : "";
+        return `<tr>
+          <td>${escapeHtml(formatDate(lead.created_at))}</td>
+          <td><strong>${escapeHtml(lead.nome || "-")}</strong></td>
+          <td>${whatsapp ? `<a href="${whatsapp}" target="_blank" rel="noopener">${escapeHtml(lead.telefone)}</a>` : "-"}</td>
+          <td>${escapeHtml(lead.tipo_imovel || "-")}</td>
+          <td>${escapeHtml(lead.regiao || "-")}</td>
+          <td>${escapeHtml(lead.faixa_renda || "-")}</td>
+          <td>${escapeHtml(lead.origem || "Direto")}</td>
+          <td><select class="filter-select lead-status" data-id="${escapeHtml(lead.id)}">${Object.entries(LEAD_STATUS).map(([value, label]) => `<option value="${value}"${lead.status === value ? " selected" : ""}>${label}</option>`).join("")}</select></td>
+        </tr>`;
+      }).join("")}</tbody></table>`;
+  }
+
+  async function updateLeadStatus(id, status, select) {
+    select.disabled = true;
+    const { error } = await supabaseClient.from("interessados_imovel").update({ status }).eq("id", id);
+    select.disabled = false;
+    if (error) {
+      console.error("Erro ao atualizar status:", error);
+      alert("Não foi possível salvar o status. Tente de novo.");
+      const lead = allLeads.find(item => item.id === id);
+      if (lead) select.value = lead.status;
+      return;
+    }
+    const lead = allLeads.find(item => item.id === id);
+    if (lead) lead.status = status;
+    document.getElementById("leadsInfo").textContent =
+      `${filteredLeads().length} de ${allLeads.length} cadastro(s) · ${allLeads.filter(item => item.status === "novo").length} novo(s) aguardando contato`;
+  }
+
+  function exportLeadsCsv() {
+    const rows = [["Data", "Nome", "Telefone", "Tipo de imóvel", "Região", "Renda familiar", "Origem", "Status"]]
+      .concat(filteredLeads().map(lead => [formatDate(lead.created_at), lead.nome, lead.telefone, lead.tipo_imovel, lead.regiao, lead.faixa_renda, lead.origem || "Direto", LEAD_STATUS[lead.status] || lead.status]));
+    const csv = rows.map(row => row.map(cell => `"${String(cell == null ? "" : cell).replace(/"/g, '""')}"`).join(";")).join("\r\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `interessados-imovel-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  document.getElementById("leadsRefreshButton")?.addEventListener("click", loadLeads);
+  document.getElementById("leadsExportButton")?.addEventListener("click", exportLeadsCsv);
+  ["leadsSearch", "leadsStatusFilter", "leadsTipoFilter"].forEach(id =>
+    document.getElementById(id)?.addEventListener(id === "leadsSearch" ? "input" : "change", renderLeads));
+  document.getElementById("leadsContainer")?.addEventListener("change", event => {
+    const select = event.target.closest(".lead-status");
+    if (select) updateLeadStatus(select.dataset.id, select.value, select);
+  });
 
   const refreshButton =
     document.getElementById("refreshButton");

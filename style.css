@@ -21,7 +21,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 h1, h2, h3, p { margin: 0; }
 h1, h2 { font-weight: 850; font-stretch: 112%; letter-spacing: -.02em; line-height: 1.02; text-wrap: balance; }
 h2 { font-size: clamp(30px, 4.4vw, 52px); }
-h3 { font-size: 19px; font-weight: 750; line-height: 1.25; }
+h3 { font-size: 19px; font-weight: 750; line-height: 1.25; text-wrap: balance; }
+p, li, summary, figcaption, blockquote, legend, .field { text-wrap: pretty; }
 :focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
 .section-black :focus-visible, .site-header :focus-visible, .footer :focus-visible { outline-color: var(--yellow); }
 .wrap { width: min(var(--wrap), 100% - 2 * var(--gutter)); margin-inline: auto; }
@@ -57,6 +58,7 @@ h3 { font-size: 19px; font-weight: 750; line-height: 1.25; }
 .hero-sub { margin-top: 24px; max-width: 34em; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; }
 .hero-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; padding: 0; list-style: none; }
 .hero-facts li { padding: 8px 14px; border: 2px solid var(--black); border-radius: 999px; font-weight: 700; font-size: 15px; }
+.hero-facts span { white-space: nowrap; }
 .hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; margin-top: 32px; }
 .hero-cta .btn { min-height: 60px; padding: 0 32px; font-size: 18px; }
 .hero-cta span { font-size: 15px; font-weight: 600; }
@@ -203,18 +205,44 @@ h3 { font-size: 19px; font-weight: 750; line-height: 1.25; }
 }
 
 @media (max-width: 640px) {
-  body { font-size: 16px; padding-bottom: 84px; }
+  body { font-size: 16px; }
   .header-inner .btn { display: none; }
   .header-inner { min-height: 58px; justify-content: center; }
   .hero { padding-top: 32px; }
   .hero-cta .btn { width: 100%; }
   .hero-cta span { width: 100%; text-align: center; }
-  .hero-mark { width: 120vw; bottom: auto; top: 10%; right: -40%; }
+  .hero-mark { display: none; }
+  .hero-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .hero-facts li { display: grid; place-content: center; padding: 10px 6px; border-radius: 10px; text-align: center; font-size: 14px; line-height: 1.2; }
+  .hero-facts span { display: block; }
+  .hero-video figcaption, .hero-cta span { text-wrap: balance; }
+  .fit-intro .btn, .faq-intro .btn { width: 100%; }
+  .fit-lists > div { padding: 22px 18px; }
+  .ticks { gap: 10px; font-size: 15px; }
+  .ticks li { padding-left: 28px; }
+  .steps li { grid-template-columns: 34px 1fr; column-gap: 12px; padding: 18px 0; }
+  .steps li::before { font-size: 28px; }
+  .steps p, .flow p, .voice blockquote { font-size: 15px; text-wrap: balance; }
+  .unit { display: grid; grid-template-columns: 112px 1fr; align-items: stretch; }
+  .unit img { height: 100%; aspect-ratio: auto; min-height: 128px; }
+  .unit-body { padding: 14px 16px; }
+  .unit-city { font-size: 13px; }
+  .unit h3 { font-size: 17px; }
+  .unit-body p:not(.unit-city) { font-size: 13px; }
+  .unit a { margin-top: 8px; font-size: 14px; }
+  .faq summary { font-size: 16px; padding: 18px 36px 18px 0; text-wrap: balance; }
+  .apply-recap { font-size: 15px; }
+  .row { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { font-size: 14px; }
+  .field input, .field select { font-size: 16px; padding-inline: 12px; }
+  .field select { padding-right: 30px; background-position: calc(100% - 16px) 50%, calc(100% - 10px) 50%; }
+  .footer { padding: 28px 0 104px; text-align: center; }
+  .footer-inner { flex-direction: column; gap: 10px; }
   .flow { grid-template-columns: 1fr; row-gap: 0; }
   .flow li { padding: 0 0 28px 36px; border-top: 0; border-left: 3px solid var(--black); margin-left: 18px; }
   .flow li:last-child { border-left-color: transparent; padding-bottom: 0; }
   .flow li::before { top: -2px; left: -21px; }
-  .fit-lists, .units, .row { grid-template-columns: 1fr; }
+  .fit-lists, .units { grid-template-columns: 1fr; }
   .hero-side { max-width: none; justify-items: stretch; }
   .hero-video { width: min(280px, 100%); margin-inline: auto; }
   .hero-video figcaption { text-align: center; }

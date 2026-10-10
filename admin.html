@@ -1655,6 +1655,100 @@
           ← Voltar ao dashboard
         </button>
 
+        <div class="charts-period-filter">
+          <label for="leadsPeriod">Período das métricas</label>
+          <select id="leadsPeriod">
+            <option value="7">Últimos 7 dias</option>
+            <option value="30" selected>Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="365">Últimos 12 meses</option>
+            <option value="all">Todo o período</option>
+          </select>
+        </div>
+
+        <section class="stats">
+          <div class="stat-card"><div class="label">Total de interessados</div><div class="number" id="mcmvTotal">0</div></div>
+          <div class="stat-card"><div class="label">Novos</div><div class="number" id="mcmvNew">0</div></div>
+          <div class="stat-card"><div class="label">Em contato</div><div class="number" id="mcmvContact">0</div></div>
+          <div class="stat-card"><div class="label">Fechados</div><div class="number" id="mcmvClosed">0</div></div>
+        </section>
+
+        <section class="professional-dashboard">
+          <div class="dashboard-section-title">Desempenho das vendas</div>
+          <div class="funnel-box">
+            <div class="funnel-header">
+              <div>
+                <h2>Funil de vendas</h2>
+                <p>Acompanhe a evolução dos interessados em cada etapa.</p>
+              </div>
+            </div>
+            <div class="funnel-grid">
+              <div class="funnel-card"><div class="funnel-card-label">Cadastros</div><div class="funnel-card-number" id="mcmvFunnelLeads">0</div><div class="funnel-card-info">Interessados recebidos</div></div>
+              <div class="funnel-card"><div class="funnel-card-label">Em contato</div><div class="funnel-card-number" id="mcmvFunnelContact">0</div><div class="funnel-card-info">Em atendimento</div></div>
+              <div class="funnel-card"><div class="funnel-card-label">Visitas</div><div class="funnel-card-number" id="mcmvFunnelVisit">0</div><div class="funnel-card-info">Visitas agendadas</div></div>
+              <div class="funnel-card"><div class="funnel-card-label">Fechados</div><div class="funnel-card-number" id="mcmvFunnelClosed">0</div><div class="funnel-card-info">Negócios fechados</div></div>
+              <div class="funnel-card"><div class="funnel-card-label">Descartados</div><div class="funnel-card-number" id="mcmvFunnelLost">0</div><div class="funnel-card-info">Sem perfil ou sem interesse</div></div>
+            </div>
+          </div>
+          <div class="conversion-box">
+            <div class="conversion-card"><div class="conversion-label">Visitante → cadastro</div><div class="conversion-number" id="mcmvConvPage">0%</div></div>
+            <div class="conversion-card"><div class="conversion-label">Cadastro → visita</div><div class="conversion-number" id="mcmvConvVisit">0%</div></div>
+            <div class="conversion-card"><div class="conversion-label">Cadastro → fechado</div><div class="conversion-number" id="mcmvConvClosed">0%</div></div>
+          </div>
+        </section>
+
+        <section class="charts-section">
+          <div class="dashboard-section-title">Análise visual</div>
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-header"><div><h3>Distribuição dos interessados</h3><p>Interessados por etapa do atendimento</p></div></div>
+              <div class="chart-container"><canvas id="mcmvStatusChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header"><div><h3>Funil de vendas</h3><p>Evolução dos interessados</p></div></div>
+              <div class="chart-container"><canvas id="mcmvFunnelChart"></canvas></div>
+            </div>
+            <div class="chart-card chart-full">
+              <div class="chart-header"><div><h3>Cadastros ao longo do tempo</h3><p>Volume de interessados recebidos</p></div></div>
+              <div class="chart-container chart-time"><canvas id="mcmvLeadsChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header"><div><h3>Tipo de imóvel</h3><p>O que os interessados procuram</p></div></div>
+              <div class="chart-container"><canvas id="mcmvTypeChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header"><div><h3>Renda familiar</h3><p>Interessados por faixa de renda</p></div></div>
+              <div class="chart-container"><canvas id="mcmvIncomeChart"></canvas></div>
+            </div>
+            <div class="chart-card chart-full">
+              <div class="chart-header"><div><h3>Origem dos cadastros</h3><p>De onde vieram os interessados (utm_source dos anúncios ou site de origem)</p></div></div>
+              <div class="chart-container"><canvas id="mcmvOriginChart"></canvas></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="site-visits-section">
+          <div class="dashboard-section-title">Visitas da página</div>
+          <div class="site-visits-summary">
+            <div class="site-visits-stat">
+              <div class="site-visits-stat-label">Visitas</div>
+              <div class="site-visits-stat-number" id="mcmvVisitsTotal">0</div>
+              <div class="site-visits-stat-info">Visualizações da página /minhacasaminhavida no período</div>
+              <div class="site-visits-stat-trend" id="mcmvVisitsTrend"></div>
+            </div>
+            <div class="site-visits-stat">
+              <div class="site-visits-stat-label">Visitantes</div>
+              <div class="site-visits-stat-number" id="mcmvVisitorsUnique">0</div>
+              <div class="site-visits-stat-info">Visitantes únicos estimados</div>
+              <div class="site-visits-stat-trend" id="mcmvVisitorsTrend"></div>
+            </div>
+          </div>
+          <div class="chart-card chart-full">
+            <div class="chart-header"><div><h3>Visitas à página ao longo do tempo</h3><p>Pessoas chegando à página do Minha Casa Minha Vida.</p></div></div>
+            <div class="chart-container chart-time"><canvas id="mcmvVisitsChart"></canvas></div>
+          </div>
+        </section>
+
         <section class="candidates-box">
           <div class="box-header">
             <h2>Interessados</h2>
@@ -2364,6 +2458,191 @@
     }
     allLeads = data || [];
     renderLeads();
+    await loadMcmvVisits();
+    updateLeadsMetrics();
+  }
+
+  function isMcmvPage(page) {
+    return String(page || "").startsWith("/minhacasaminhavida");
+  }
+
+  let mcmvVisits = [];
+  const mcmvCharts = {};
+
+  async function loadMcmvVisits() {
+    const { data, error } = await supabaseClient
+      .from("site_visits")
+      .select("visited_at, session_id, page")
+      .like("page", "/minhacasaminhavida%")
+      .order("visited_at", { ascending: true });
+    if (error) {
+      console.error("Erro ao carregar visitas da página de interessados:", error);
+      return;
+    }
+    mcmvVisits = data || [];
+  }
+
+  function periodRange() {
+    const period = document.getElementById("leadsPeriod").value;
+    if (period === "all") return { start: null, previousStart: null };
+    const days = Number(period);
+    const start = new Date();
+    start.setDate(start.getDate() - days);
+    const previousStart = new Date();
+    previousStart.setDate(previousStart.getDate() - days * 2);
+    return { start, previousStart };
+  }
+
+  function inRange(dateValue, from, to) {
+    if (!dateValue) return false;
+    const date = new Date(dateValue);
+    return (!from || date >= from) && (!to || date < to);
+  }
+
+  function percent(part, total) {
+    return total ? `${Math.round((part / total) * 100)}%` : "0%";
+  }
+
+  function countBy(items, key, fallback) {
+    const counts = {};
+    items.forEach(item => {
+      const value = item[key] || fallback;
+      counts[value] = (counts[value] || 0) + 1;
+    });
+    return counts;
+  }
+
+  function dayKey(dateValue) {
+    const date = new Date(dateValue);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  function dayLabel(key) {
+    const [, month, day] = key.split("-");
+    return `${day}/${month}`;
+  }
+
+  function drawChart(id, config) {
+    const canvas = document.getElementById(id);
+    if (!canvas || typeof Chart === "undefined") return;
+    if (mcmvCharts[id]) mcmvCharts[id].destroy();
+    mcmvCharts[id] = new Chart(canvas, config);
+  }
+
+  const MCMV_COLORS = ["#ffd800", "#333333", "#777777", "#111111", "#cccccc", "#555555", "#999999", "#e6c200"];
+
+  function barOptions(horizontal) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: horizontal ? "y" : "x",
+      plugins: { legend: { display: false } },
+      scales: horizontal
+        ? { x: { beginAtZero: true, ticks: { precision: 0 } } }
+        : { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    };
+  }
+
+  function lineChart(id, label, counts) {
+    const keys = Object.keys(counts).sort();
+    drawChart(id, {
+      type: "line",
+      data: { labels: keys.map(dayLabel), datasets: [{ label, data: keys.map(key => counts[key]), borderColor: "#ffd800", backgroundColor: "rgba(255,216,0,0.15)", fill: true, tension: 0.35, pointRadius: 4, pointBackgroundColor: "#111111" }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+  }
+
+  function updateLeadsMetrics() {
+    if (!document.getElementById("leadsPeriod")) return;
+    const { start, previousStart } = periodRange();
+    const leads = allLeads.filter(lead => inRange(lead.created_at, start));
+    const byStatus = countBy(leads, "status", "novo");
+    const total = leads.length;
+    const novos = byStatus.novo || 0;
+    const contato = byStatus.em_contato || 0;
+    const visita = byStatus.visita || 0;
+    const fechado = byStatus.fechado || 0;
+    const descartado = byStatus.descartado || 0;
+    // Quem já fechou também passou pelas etapas anteriores do funil
+    const chegaramContato = contato + visita + fechado;
+    const chegaramVisita = visita + fechado;
+
+    const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    setText("mcmvTotal", total);
+    setText("mcmvNew", novos);
+    setText("mcmvContact", contato);
+    setText("mcmvClosed", fechado);
+    setText("mcmvFunnelLeads", total);
+    setText("mcmvFunnelContact", contato);
+    setText("mcmvFunnelVisit", visita);
+    setText("mcmvFunnelClosed", fechado);
+    setText("mcmvFunnelLost", descartado);
+
+    // Visitas da página no período e no período anterior
+    const visits = mcmvVisits.filter(v => inRange(v.visited_at, start));
+    const previousVisits = start ? mcmvVisits.filter(v => inRange(v.visited_at, previousStart, start)) : [];
+    const visitors = new Set(visits.map(v => v.session_id).filter(Boolean));
+    const previousVisitors = new Set(previousVisits.map(v => v.session_id).filter(Boolean));
+
+    setText("mcmvConvPage", percent(total, visitors.size));
+    setText("mcmvConvVisit", percent(chegaramVisita, total));
+    setText("mcmvConvClosed", percent(fechado, total));
+
+    setText("mcmvVisitsTotal", visits.length);
+    setText("mcmvVisitorsUnique", visitors.size);
+    renderVisitsTrend("mcmvVisitsTrend", visits.length, previousVisits.length, Boolean(start));
+    renderVisitsTrend("mcmvVisitorsTrend", visitors.size, previousVisitors.size, Boolean(start));
+
+    drawChart("mcmvStatusChart", {
+      type: "doughnut",
+      data: { labels: Object.values(LEAD_STATUS), datasets: [{ data: [novos, contato, visita, fechado, descartado], backgroundColor: ["#ffd800", "#333333", "#777777", "#111111", "#cccccc"], borderWidth: 2, borderColor: "#ffffff" }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+    });
+
+    drawChart("mcmvFunnelChart", {
+      type: "bar",
+      data: { labels: ["Cadastros", "Em contato", "Visita", "Fechados"], datasets: [{ label: "Quantidade", data: [total, chegaramContato, chegaramVisita, fechado], backgroundColor: ["#ffd800", "#777777", "#333333", "#111111"], borderRadius: 8 }] },
+      options: barOptions(false)
+    });
+
+    const leadsPerDay = {};
+    leads.forEach(lead => { const key = dayKey(lead.created_at); leadsPerDay[key] = (leadsPerDay[key] || 0) + 1; });
+    lineChart("mcmvLeadsChart", "Cadastros", leadsPerDay);
+
+    const visitsPerDay = {};
+    visits.forEach(v => { const key = dayKey(v.visited_at); visitsPerDay[key] = (visitsPerDay[key] || 0) + 1; });
+    lineChart("mcmvVisitsChart", "Visitas", visitsPerDay);
+
+    const byType = countBy(leads, "tipo_imovel", "Não informado");
+    const typeLabels = ["Casa", "Apartamento", "Melhor opção no orçamento"].filter(label => byType[label]).concat(Object.keys(byType).filter(label => !["Casa", "Apartamento", "Melhor opção no orçamento"].includes(label)));
+    drawChart("mcmvTypeChart", {
+      type: "doughnut",
+      data: { labels: typeLabels, datasets: [{ data: typeLabels.map(label => byType[label]), backgroundColor: MCMV_COLORS, borderWidth: 2, borderColor: "#ffffff" }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+    });
+
+    const incomeOrder = ["Até R$ 2.850", "De R$ 2.851 a R$ 4.700", "De R$ 4.701 a R$ 8.600", "De R$ 8.601 a R$ 12.000", "Acima de R$ 12.000", "Não sei informar"];
+    const byIncome = countBy(leads, "faixa_renda", "Não sei informar");
+    drawChart("mcmvIncomeChart", {
+      type: "bar",
+      data: { labels: incomeOrder, datasets: [{ label: "Interessados", data: incomeOrder.map(label => byIncome[label] || 0), backgroundColor: "#ffd800", borderRadius: 8, maxBarThickness: 28 }] },
+      options: barOptions(true)
+    });
+
+    // Origem: usa o utm_source quando existe, senão o site de onde a pessoa veio
+    const byOrigin = {};
+    leads.forEach(lead => {
+      const origem = String(lead.origem || "");
+      const source = (origem.match(/utm_source=([^;]+)/) || origem.match(/ref=([^;]+)/) || [])[1];
+      const label = source ? source.trim() : "Direto";
+      byOrigin[label] = (byOrigin[label] || 0) + 1;
+    });
+    const originLabels = Object.keys(byOrigin).sort((a, b) => byOrigin[b] - byOrigin[a]).slice(0, 10);
+    drawChart("mcmvOriginChart", {
+      type: "bar",
+      data: { labels: originLabels, datasets: [{ label: "Interessados", data: originLabels.map(label => byOrigin[label]), backgroundColor: "#111111", borderRadius: 8, maxBarThickness: 28 }] },
+      options: barOptions(true)
+    });
   }
 
   function filteredLeads() {
@@ -2422,6 +2701,7 @@
     }
     const lead = allLeads.find(item => item.id === id);
     if (lead) lead.status = status;
+    updateLeadsMetrics();
     document.getElementById("leadsInfo").textContent =
       `${filteredLeads().length} de ${allLeads.length} cadastro(s) · ${allLeads.filter(item => item.status === "novo").length} novo(s) aguardando contato`;
   }
@@ -2439,6 +2719,7 @@
   }
 
   document.getElementById("leadsRefreshButton")?.addEventListener("click", loadLeads);
+  document.getElementById("leadsPeriod")?.addEventListener("change", updateLeadsMetrics);
   document.getElementById("leadsExportButton")?.addEventListener("click", exportLeadsCsv);
   ["leadsSearch", "leadsStatusFilter", "leadsTipoFilter"].forEach(id =>
     document.getElementById(id)?.addEventListener(id === "leadsSearch" ? "input" : "change", renderLeads));
@@ -3226,7 +3507,7 @@ async function loadSiteVisits() {
   try {
     const { data, error } = await supabaseClient
       .from("site_visits")
-      .select("id, visited_at, session_id")
+      .select("id, visited_at, session_id, page")
       .order("visited_at", { ascending: true });
 
     if (error) {
@@ -3234,7 +3515,8 @@ async function loadSiteVisits() {
       return;
     }
 
-    allSiteVisits = data || [];
+    // Visitas da página Minha Casa Minha Vida ficam só nas métricas de interessados
+    allSiteVisits = (data || []).filter(v => !isMcmvPage(v.page));
     updateSiteVisits(allSiteVisits);
   } catch (error) {
     console.error("Erro ao carregar visitas do site:", error);

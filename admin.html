@@ -2394,13 +2394,32 @@
     if (candidatesSection) candidatesSection.style.display = visible ? "" : "none";
   }
 
+  // Lembra a tela aberta para voltar a ela ao recarregar a página
+  function rememberView(view) {
+    try { sessionStorage.setItem("adminView", view); } catch (error) {}
+  }
+
+  function rememberedView() {
+    try { return sessionStorage.getItem("adminView") || "dashboard"; } catch (error) { return "dashboard"; }
+  }
+
+  // Na tela de interessados, o botão vira o atalho de volta para as entrevistas
+  function setLeadsButtonMode(inLeadsView) {
+    if (!leadsButton) return;
+    leadsButton.textContent = inLeadsView ? "👥 Entrevistas" : "🏠 Interessados";
+    leadsButton.title = inLeadsView
+      ? "Voltar para os candidatos e entrevistas"
+      : "Interessados em comprar imóvel (página /minhacasaminhavida)";
+  }
+
   function showDashboardView() {
     if (dashboardView) dashboardView.style.display = "block";
     if (settingsView) settingsView.style.display = "none";
     if (leadsView) leadsView.style.display = "none";
     if (settingsButton) settingsButton.classList.remove("active");
-    if (leadsButton) leadsButton.classList.remove("active");
+    setLeadsButtonMode(false);
     setCandidatesVisible(true);
+    rememberView("dashboard");
   }
 
   function showSettingsView() {
@@ -2408,8 +2427,9 @@
     if (settingsView) settingsView.style.display = "block";
     if (leadsView) leadsView.style.display = "none";
     if (settingsButton) settingsButton.classList.add("active");
-    if (leadsButton) leadsButton.classList.remove("active");
+    setLeadsButtonMode(false);
     setCandidatesVisible(true);
+    rememberView("settings");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -2418,15 +2438,26 @@
     if (settingsView) settingsView.style.display = "none";
     if (leadsView) leadsView.style.display = "block";
     if (settingsButton) settingsButton.classList.remove("active");
-    if (leadsButton) leadsButton.classList.add("active");
+    setLeadsButtonMode(true);
     setCandidatesVisible(false);
+    rememberView("leads");
     window.scrollTo({ top: 0, behavior: "smooth" });
     loadLeads();
   }
 
+  function restoreView() {
+    const view = rememberedView();
+    if (view === "leads") showLeadsView();
+    else if (view === "settings") showSettingsView();
+    else showDashboardView();
+  }
+
   if (settingsButton) settingsButton.addEventListener("click", showSettingsView);
   if (backToDashboardButton) backToDashboardButton.addEventListener("click", showDashboardView);
-  if (leadsButton) leadsButton.addEventListener("click", showLeadsView);
+  if (leadsButton) leadsButton.addEventListener("click", () => {
+    if (leadsView && leadsView.style.display === "block") showDashboardView();
+    else showLeadsView();
+  });
   document.getElementById("leadsBackButton")?.addEventListener("click", showDashboardView);
 
 
@@ -2986,7 +3017,7 @@
     dashboard.style.display =
       "block";
 
-    showDashboardView();
+    restoreView();
 
     loginButton.disabled =
       false;
@@ -5427,10 +5458,13 @@ async function loadEmailTemplates() {
       session
     ) => {
 
+      // O Supabase também envia SIGNED_IN ao voltar para a aba do navegador;
+      // com o painel já aberto, não recarrega nem troca de tela.
       if (
         event ===
         "SIGNED_IN" &&
-        session
+        session &&
+        dashboard.style.display !== "block"
       ) {
 
         await showDashboard();
